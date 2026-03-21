@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
-import SearchView from './SearchView';
-import PlaylistDetailView from './PlaylistDetailView';
+import SearchView from '../user/views/subViews/SearchView';
+import PlaylistDetailView from '../user/views/subViews/PlaylistDetailView';
 
 const MainBox = ({ currentView, selectedPlaylist, setView }) => {
     return (

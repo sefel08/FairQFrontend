@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TrackCard from './TrackCard';
+import TrackCard from '../../../global/components/TrackCard/TrackCard';
 import styles from './SearchView.module.css';
 
 const SearchView = ({ onTrackClick }) => {

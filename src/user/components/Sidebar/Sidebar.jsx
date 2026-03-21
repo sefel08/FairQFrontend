@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../../global/contexts/AuthContext';
 import styles from './Sidebar.module.css';
-import UserProfile from './UserProfile';
+import UserProfile from '../../../global/components/UserProfile/UserProfile';
 
 const Sidebar = ({ onPlaylistSelect, onGoBack }) => {
   const { authorized, user, login } = useAuth();

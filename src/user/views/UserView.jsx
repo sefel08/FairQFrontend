@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import MainBox from '../components/MainBox';
-import Queuebar from '../components/Queuebar';
+import Sidebar from '../components/Sidebar/Sidebar';
+import MainBox from '../../components/MainBox';
+import Queuebar from '../../global/components/Queuebar/Queuebar';
 import styles from './UserView.module.css';
 
 const UserView = ({ goBackToViewSelection }) => {
