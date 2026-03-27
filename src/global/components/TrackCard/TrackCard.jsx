@@ -3,8 +3,6 @@ import styles from './TrackCard.module.css';
 
 const TrackCard = ({ track, onClick }) => {
   
-  console.log(track);
-
   const formatTime = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(0);

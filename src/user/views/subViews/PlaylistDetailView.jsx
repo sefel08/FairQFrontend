@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TrackCard from '../../../global/components/TrackCard/TrackCard';
-import styles from './PlaylistDetailView.module.css';
+import styles from './SubViewsStyle.module.css';
 import defaultImage from '../../../assets/spotify_icon.png';
 
 const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
@@ -51,7 +51,6 @@ const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
             <div className={styles.tracksList}>
                 {tracks.map((track) => (
                     <TrackCard 
-                        key={track.id} 
                         track={track} 
                         onClick={onTrackClick} 
                     />

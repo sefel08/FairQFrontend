@@ -1,22 +1,59 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
+
+import { useUser } from '../../contexts/UserContext';
+
+import style from './MainBox.module.css';
 import SearchView from '../../views/subViews/SearchView';
 import HomeView from '../../views/subViews/HomeView';
 import LibraryView from '../../views/subViews/LibraryView';
 import PlaylistDetailView from '../../views/subViews/PlaylistDetailView';
 
-const MainBox = ({ currentView, selectedPlaylist, setView }) => {
+const MainBox = ({ userName, currentView, lastView, setView }) => {
+    
+    const { searchResults, setSearchResults,
+        searchQuery, setSearchQuery,
+        queryForResults, setQueryForResults,
+        userPlaylists, setUserPlaylists,
+        selectedPlaylist, setSelectedPlaylist,
+    } = useUser();
+    
+    const mainBoxRef = useRef(null);
+
+    const handlePlaylistSelect = (playlist) => {
+        setSelectedPlaylist(playlist);
+        setView('playlist');
+    }
+
     return (
-        <div className="main-content-area">
+        <div className={style.mainContentArea} ref={mainBoxRef}>
             {currentView === 'search' ? (
-                <SearchView onTrackClick={() => {}}/>
+                <SearchView 
+                    scrollRef={mainBoxRef}
+                    onTrackClick={() => {}}
+                    setSearchQuery={setSearchQuery}
+                    searchQuery={searchQuery}
+                    searchResults={searchResults}
+                    setSearchResults={setSearchResults}
+                    queryForResults={queryForResults}
+                    setQueryForResults={setQueryForResults}
+                />
             ) : currentView === 'home' ? (
-                <HomeView userName="Użytkowniku"/>
+                <HomeView 
+                    userName={userName || "Użytkowniku"}
+                    changeToSearchView={() => setView('search')}
+                    setSearchQuery={setSearchQuery} 
+                    userPlaylists={userPlaylists}
+                    onPlaylistSelect={handlePlaylistSelect}
+                />
             ) : currentView === 'library' ? (
-                <LibraryView savedTracks={[]} onTrackClick={() => {}}/>
+                <LibraryView 
+                    userPlaylists={userPlaylists} 
+                    onPlaylistSelect={handlePlaylistSelect}
+                />
             ) : (
                 <PlaylistDetailView 
                     selectedPlaylist={selectedPlaylist} 
-                    onBack={() => setView('search')}
+                    onBack={() => setView(lastView)}
                     onTrackClick={() => {}} 
                 />
             )}

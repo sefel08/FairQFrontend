@@ -51,7 +51,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 280px;
+    width: 65vw;
     height: 100%;
     z-index: 2000;
     transform: translateX(-100%);
@@ -65,7 +65,7 @@
     flex: 1;
     background-color: var(--spotify-black);
     color: var(--spotify-white);
-    padding: 2vh;
+    padding: 0 2vh;
     overflow-y: auto;
     border-radius: 20px;
 }
@@ -75,11 +75,20 @@
     bottom: 10vh;
     left: 50%;
     transform: translateX(-50%);
-    background-color: transparent;
-    color: white;
-    padding: 10px 20px;
-    cursor: pointer;
     z-index: 1000;
+
+    padding: 0.5rem 1rem;
+
+    background-color: var(--spotify-dark-gray);
+    border: solid 1px rgba(255, 255, 255, 0.05);
+    border-radius: 1.2rem;
+    color: white;
+
+    font-weight: 500;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .queueContainer {

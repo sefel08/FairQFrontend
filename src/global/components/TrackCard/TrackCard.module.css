@@ -10,10 +10,9 @@
     width: 100%;
     box-sizing: border-box;
 }
-
-.trackCard:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
+/* .trackCard:hover {
+    background-color: var(--spotify-light-gray);
+} */
 
 .albumImage {
     width: 56px;

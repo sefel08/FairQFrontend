@@ -1,19 +1,25 @@
 import React from 'react';
+import SearchBox from '../../components/SearchBox/SearchBox';
+import PlaylistCard from '../../../global/components/PlaylistCard/PlaylistCard';
 import styles from './SubViewsStyle.module.css';
 
-const HomeView = ({ userName = "Użytkowniku" }) => {
-    const quickPicks = ["Daily Mix 1", "Odkryj w tym tygodniu", "Polskie Hity", "Chillout"];
+const HomeView = ({ userName = "Użytkowniku", changeToSearchView, setSearchQuery, userPlaylists, onPlaylistSelect }) => {
+
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        changeToSearchView();
+    }
 
     return (
         <div className={styles.container}>
+            
+            <SearchBox onSearch={handleSearch} />
+            
             <h1 className={styles.header}>Dzień dobry, {userName}</h1>
             
             <div className={styles.grid}>
-                {quickPicks.map((item, index) => (
-                    <div key={index} className={styles.card}>
-                        <div className={styles.cardImagePlaceholder}></div>
-                        <span className={styles.cardTitle}>{item}</span>
-                    </div>
+                {userPlaylists.map((playlist) => (
+                    <PlaylistCard playlist={playlist} onClick={() => onPlaylistSelect(playlist)} variant={"compact"} />
                 ))}
             </div>
 

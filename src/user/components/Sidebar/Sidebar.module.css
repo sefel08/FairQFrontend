@@ -8,67 +8,6 @@
     box-sizing: border-box;
 }
 
-.grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px 0;
-    width: 100%;
-    box-sizing: border-box;
-    flex: 1; 
-    overflow-y: auto;
-}
-
-.playlistCard {
-    display: flex;
-    align-items: center;
-    background-color: #181818;
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    width: 100%;
-    box-sizing: border-box;
-    gap: 12px;
-    transition: background-color 0.3s ease;
-}
-.playlistCard:hover {
-    background-color: #282828;
-}
-
-.image {
-    width: 50px;
-    min-width: 50px;
-    height: 50px;
-    border-radius: 4px;
-    object-fit: cover;
-}
-
-.textContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-    min-width: 0;
-}
-
-.name {
-    color: white;
-    font-weight: bold;
-    font-size: 14px;
-    margin: 0;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.tracksCount {
-    color: #b3b3b3;
-    font-size: 12px;
-    margin: 4px 0 0 0;
-    text-align: left;
-}
-
 .footer {
     padding-top: 20px;
     margin-top: auto;

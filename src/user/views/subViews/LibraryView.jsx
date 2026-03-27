@@ -1,8 +1,8 @@
 import React from 'react';
-import TrackCard from '../../../global/components/TrackCard/TrackCard';
 import styles from './SubViewsStyle.module.css';
+import PlaylistCard from '../../../global/components/PlaylistCard/PlaylistCard';
 
-const LibraryView = ({ savedTracks = [], onTrackClick }) => {
+const LibraryView = ({ userPlaylists, onPlaylistSelect }) => {
     return (
         <div className={styles.container}>
             <header className={styles.stickyHeader}>
@@ -14,14 +14,11 @@ const LibraryView = ({ savedTracks = [], onTrackClick }) => {
                 </div>
             </header>
 
+            {/* playlist cards */}
             <div className={styles.list}>
-                {savedTracks.length > 0 ? (
-                    savedTracks.map((track) => (
-                        <TrackCard key={track.id} track={track} onClick={onTrackClick} />
-                    ))
-                ) : (
-                    <p className={styles.emptyMessage}>Twoja biblioteka jest jeszcze pusta. Dodaj jakieś utwory!</p>
-                )}
+                {userPlaylists.map(playlist => (
+                    <PlaylistCard playlist={playlist} onClick={() => onPlaylistSelect(playlist)} />
+                ))}
             </div>
         </div>
     );

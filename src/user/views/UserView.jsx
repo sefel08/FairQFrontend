@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
+
 import { useAuth } from '../../global/contexts/AuthContext';
-import UserProfile from '../../global/components/UserProfile/UserProfile';
+import { useUser } from '../contexts/UserContext';
+
 import Sidebar from '../components/Sidebar/Sidebar';
 import MainBox from '../components/Mainbox/MainBox';
 import Queuebar from '../../global/components/Queuebar/Queuebar';
 import styles from './UserView.module.css';
-import default_avatar_image from '../../assets/spotify_icon.png';
 import Navbar from '../../global/components/Navbar/Navbar';
 
 const UserView = ({ goBackToViewSelection }) => {
+    
     const { user, authorized, login } = useAuth();
+    const { queue } = useUser();
     
     const [currentSubView, setCurrentSubView] = useState('home');
+    const [lastView, setLastView] = useState('home');
+    const handleViewChange = (view) => {
+        setLastView(currentSubView);
+        setCurrentSubView(view);
+    };
+
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isQueueOpen, setQueueOpen] = useState(false);
-    
-    const [selectedPlaylist, setSelectedPlaylistData] = useState(null);
-
-    //queue
-    const [queue, setQueue] = useState([]);
-
-    const handlePlaylistSelect = (playlistData) => {
-        setSelectedPlaylistData(playlistData);
-        setCurrentSubView('playlist');
-    };
 
     return (
         <div className={styles.container}>
@@ -39,7 +38,7 @@ const UserView = ({ goBackToViewSelection }) => {
 
             {/* Main Content */}
             <main className={styles.mainContent}>
-                <MainBox currentView={currentSubView} selectedPlaylist={selectedPlaylist} setView={setCurrentSubView} />
+                <MainBox userName={user.name} currentView={currentSubView} lastView={lastView} setView={handleViewChange} />
                 <button className={styles.showQueueBtn} onClick={() => setQueueOpen(true)}>Pokaż kolejkę</button>
             </main>
 
@@ -49,7 +48,7 @@ const UserView = ({ goBackToViewSelection }) => {
 
             {/* Sidebar wysuwany od boku */}
             <nav className={`${styles.sidebarNav} ${isSidebarOpen ? styles.active : ''}`}>
-                <Sidebar onPlaylistSelect={(p) => { handlePlaylistSelect(p); setSidebarOpen(false); }} onGoBack={goBackToViewSelection} />
+                <Sidebar onGoBack={goBackToViewSelection} />
             </nav>
 
             {/* Queuebar wysuwany od dołu */}
