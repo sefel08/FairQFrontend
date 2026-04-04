@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Dashboard.module.css';
+import { useAuth } from '../contexts/AuthContext';
 import SelectView from './SelectView';
 import PlayerView from '../../player/views/PlayerView';
 import UserView from '../../user/views/UserView';
@@ -9,10 +10,13 @@ import Navbar from '../components/Navbar/Navbar';
 
 const Dashboard = () => {
   
-  const [currentView, setCurrentView] = useState(() => {
-    return localStorage.getItem('currentView') || null;
+  const { authorized, loadingAuth } = useAuth();
+
+  const [currentView, setCurrentView] = useState(() => localStorage.getItem('currentView') || null);
+  const [navbarTabs, setNavbarTabs] = useState(() => {
+    const savedTabs = localStorage.getItem('navbarTabs');
+    return savedTabs ? JSON.parse(savedTabs) : [];
   });
-  const [navbarTabs, setNavbarTabs] = useState([]);
 
   const resetView = () => {
     setCurrentView(null);
@@ -21,6 +25,14 @@ const Dashboard = () => {
   const handleViewChange = (view) => {
     setCurrentView(view);
     localStorage.setItem('currentView', view);
+  }
+  const handleTabsChange = (tabs) => {
+    localStorage.setItem('navbarTabs', JSON.stringify(tabs));
+    setNavbarTabs(tabs);
+  }
+
+  if (loadingAuth) {
+    return <div className={styles.loading}>Ładowanie...</div>;
   }
 
   return (
@@ -35,7 +47,7 @@ const Dashboard = () => {
           <UserView goBackToViewSelection={resetView} />
         </UserProvider>
       ) : (
-        <SelectView setCurrentView={handleViewChange} setNavbarTabs={setNavbarTabs} />
+        <SelectView setCurrentView={handleViewChange} setNavbarTabs={handleTabsChange} />
       )}
       
       {navbarTabs.length > 0 &&

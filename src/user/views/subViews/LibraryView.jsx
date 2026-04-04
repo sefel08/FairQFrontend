@@ -22,7 +22,7 @@ const LibraryView = ({ userPlaylists, onPlaylistSelect }) => {
             {/* playlist cards */}
             <div className={styles.list}>
                 {userPlaylists.map(playlist => (
-                    <PlaylistCard playlist={playlist} onClick={() => onPlaylistSelect(playlist)} />
+                    <PlaylistCard key={playlist.id} playlist={playlist} onClick={() => onPlaylistSelect(playlist)} />
                 ))}
             </div>
         </div>
@@ -31,7 +31,7 @@ const LibraryView = ({ userPlaylists, onPlaylistSelect }) => {
 
         <div className={styles.container}>
             {/* <h1 className={styles.header}>Twoja Biblioteka</h1> */}
-            <div style={{ marginTop: '1rem', width: '50%', alignSelf: 'center' }}>
+            <div style={{ marginTop: '1rem', width: '50%', maxWidth: '350px', alignSelf: 'center' }}>
                 <UserProfile />
             </div>
             <p style={{ textAlign: 'center' }}>

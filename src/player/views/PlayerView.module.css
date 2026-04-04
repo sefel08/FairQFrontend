@@ -11,8 +11,9 @@ body {
   overflow: hidden;
   
   display: flex;
-  gap: 1rem;
   flex-direction: column;
+  gap: 2vh;
+  gap: 2dvh;
   justify-content: center;
   align-items: center; 
 
@@ -26,122 +27,132 @@ body {
   position: absolute;
   top: min(min(6vw, 6vh), 80px);
   right: min(min(6vw, 6vh), 80px); 
+  z-index: 100;
+  width: clamp(130px, 12vw, 300px);
+  max-height: 800px;
+  opacity: 1;
+
+  padding: min(2vh, 2vw);
+  padding: min(2dvh, 2dvw);
   
-  background-color: rgba(25, 25, 25, 0.9);
-  padding: 2.5vh;
-  border-radius: 2vh;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  
+  background-color: rgba(25, 25, 25, 0.6);
+  text-align: center;
+}
+.panelContent {
+  width: 100%;
+  opacity: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5vh;
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 100;
-  
-  width: clamp(130px, 12vw, 300px);
-  text-align: center;
-}
+  gap: min(1.5vh, 1.5vw);
+  gap: min(1.5dvh, 1.5dvw);
 
+  transition: opacity 0.3s ease;
+}
 .qrContainer {
   background-color: rgb(43, 41, 41);
-  padding: 1vh;
+  padding: 1vh;  
+  padding: 1dvh;
   border-radius: 1vh;
+  border-radius: 1dvh;
   width: 100%;
   aspect-ratio: 1 / 1;
+  box-sizing: border-box;
 }
-
 .qrImage {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
-
 .textCodes {
   display: flex;
   flex-direction: column;
-  gap: 0vh;
+  gap: min(1vh, 1vw);
+  gap: min(1dvh, 1dvw);
 }
-
 .codeLabel {
   font-size: clamp(10px, 0.9vw, 28px);
   color: #b3b3b3;
-  margin: 0;
   text-transform: uppercase;
   letter-spacing: 1px;
+  margin: 0;
 }
-
 .partyCode {
   font-size: clamp(14px, 1.3vw, 34px);
   font-weight: bold;
   color: #1DB954;
-  margin-top: 3%;
+  margin: 0;
 }
-
 .joinPassword {
   font-size: clamp(22px, 2.5vw, 44px);
   font-weight: 900;
-  margin: 0;
   letter-spacing: 3px;
+  margin: 0;
 }
-
-@media (max-width: 600px) {
-  .joinPanel {
-    position: static;
-    width: 85vw;
-    height: auto;
-    flex-direction: row;
-    margin-top: 2vh;
-    padding: 1.5vh 0;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .qrContainer {
-    width: clamp(60px, 12vh, 100px); 
-    min-width: 60px;
-  }
-
-  .textCodes {
-    text-align: left;
-    gap: 0.5vh;
-  }
+.hideButton, .showButton {
+  width: 100%;
+  font-size: clamp(12px, 1vh, 28px);
+  font-size: clamp(12px, 1dvh, 28px);
+  padding: 0.5vh 0;
+  padding: 0.5dvh 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-radius: 1vh;
+  border-radius: 1dvh;
+  border: solid 1px rgba(255, 255, 255, 0.05);
+}
+.showButton {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
 }
 
 /* MAIN PLAYER */
 .centralPlayer {
-  width: 90vw;
-  max-width: min(85vw, 60vh); 
+  width: 85vw;
+  max-width: min(85vw, 60vh);
+  max-width: min(85dvw, 60dvh); 
+  flex-shrink: 1; 
+  min-height: 0;
+
   height: 100%;
   z-index: 10;
 
   display: flex;
   flex-direction: column;
   gap: 2vh;
+  gap: 2dvh;
   align-items: center;
   justify-content: center;  
 }
-
 .albumCover {
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: 15px;
   object-fit: cover;
 }
-
 .trackInfo {
   text-align: center;
   width: 100%;
 }
-
 .trackTitle {
   font-size: clamp(28px, 5vh, 86px);
+  font-size: clamp(28px, 5dvh, 86px);
   font-weight: 800;
   margin: 0;
   line-height: 1.1;
 }
-
 .trackArtist {
-  font-size: clamp(18px, 3vh, 46px);
+  font-size: clamp(18px, 2vh, 46px);
+  font-size: clamp(18px, 2dvh, 46px);
   color: #b3b3b3;
   margin: 0;
   margin-top: 1.5vh;
@@ -153,24 +164,24 @@ body {
 .playbackBar {
   display: flex;
   align-items: center;
-  gap: clamp(20px, 2vh, 60px);
-  width: 150%;
-  max-width: 98vw;
-  margin-top: 1vh;
-  margin-top: 1dvh;
+  gap: clamp(20px, 2vh, 60px);  
+  gap: clamp(20px, 2dvh, 60px);
+  width: 110%;
 }
-
 .timeLabel {
   font-size: clamp(14px, 2vh, 40px); 
+  font-size: clamp(14px, 2dvh, 40px); 
   color: #a7a7a7;
   font-family: 'Roboto Mono', monospace;
   width: clamp(60px, 6vh, 100px); 
+  width: clamp(60px, 6dvh, 100px); 
 }
 .timeLabel:first-child { text-align: right; }
 .timeLabel:last-child { text-align: left; }
 .progressBarBg {
   flex: 1;
   height: clamp(6px, 0.8vh, 14px);
+  height: clamp(6px, 0.8dvh, 14px);
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   overflow: hidden;

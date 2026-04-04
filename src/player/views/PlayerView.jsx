@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import styles from './PlayerView.module.css';
 import { useAuth } from '../../global/contexts/AuthContext';
-import image from '../../assets/spotify_icon.png';
+import image from '../../assets/Wlaz_Normal.png';
 import Navbar from '../../global/components/Navbar/Navbar';
 
 const PlayerView = () => {
-  const { authorized, loading, login, user } = useAuth();
-  const [partyId, setPartyId] = useState(null);
+  const { authorized, login, user } = useAuth();
 
+  // party settings
+  const [partyId, setPartyId] = useState(null);
+  const [partyCode, setPartyCode] = useState("ROCK-WAVE-99");
+  const [joinPassword, setJoinPassword] = useState('1462');
+
+  //track info
   const [currentTrack, setCurrentTrack] = useState({
       title: "Blinding Lights",
-      artist: "The Weeknd",
+      artist: "The Weeknd, Mata, Gverilla, Beteo, Kuba Knap",
       albumCover: "https://i.scdn.co/image/ab67616d00001e02a0bddede36c718a8f58b33ae",
       durationMs: 200000, // 3:20
   });
   const [progressMs, setProgressMs] = useState(34000);
-
-  const [partyCode, setPartyCode] = useState("ROCK-WAVE-99");
-  const [joinPassword, setJoinPassword] = useState('1462');
-
   const progressPercent = (progressMs / currentTrack.durationMs) * 100;
+
+  // view info
+  const [joinPanelVisible, setJoinPanelVisible] = useState(true);
 
   const formatTime = (ms) => {
     const minutes = Math.floor(ms / 60000);
@@ -28,7 +32,7 @@ const PlayerView = () => {
   };
 
   // useEffect(() => {
-  //   if (loading) return;
+  //   if (loadingAuth) return;
   //   if (!authorized) login();
   //   else if (!partyId) {
   //     fetch('http://127.0.0.1:8080/api/party/create', { method: 'POST', credentials: 'include'})
@@ -39,7 +43,7 @@ const PlayerView = () => {
   //       })
   //       .then(setPartyId(user.spotifyId));
   //   }
-  // }, [authorized, loading]);
+  // }, [authorized, loadingAuth]);
 
   // if (!authorized) {
   //   return <div>Przekierowywanie do logowania...</div>;
@@ -50,21 +54,34 @@ const PlayerView = () => {
       
       {/* JOIN BOX */}
       <div className={styles.joinPanel}>
-        <div className={styles.qrContainer}>
-          <img src={image} alt="QR Code" className={styles.qrImage} />
-        </div>
-        
-        <div className={styles.textCodes}>
-          <div className={styles.codeGroup}>
-            <p className={styles.codeLabel}>KOD IMPREZY</p>
-            <p className={styles.partyCode}>{partyCode}</p>
+
+        {!joinPanelVisible && (
+          <button className={styles.showButton} onClick={() => setJoinPanelVisible(true)}>
+            Pokaż kod
+          </button>
+        )}
+
+        <div className={styles.panelContent}>
+          <div className={styles.qrContainer}>
+            <img src={image} alt="QR Code" className={styles.qrImage} />
           </div>
           
-          <div className={styles.codeGroup}>
-            <p className={styles.codeLabel}>HASŁO (PIN)</p>
-            <p className={styles.joinPassword}>{joinPassword}</p>
+          <div className={styles.textCodes}>
+            <div className={styles.codeGroup}>
+              <p className={styles.codeLabel}>KOD IMPREZY</p>
+              <p className={styles.partyCode}>{partyCode}</p>
+            </div>
+            <div className={styles.codeGroup}>
+              <p className={styles.codeLabel}>HASŁO (PIN)</p>
+              <p className={styles.joinPassword}>{joinPassword}</p>
+            </div>
           </div>
+
+          <button className={styles.hideButton} onClick={() => setJoinPanelVisible(false)}>
+            Ukryj
+          </button>
         </div>
+
       </div>
 
       {/* MAIN PLAYER */}

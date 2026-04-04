@@ -20,7 +20,7 @@ const HomeView = ({ userName = "Użytkowniku", changeToSearchView, setSearchQuer
             
             <PlaylistContainer style={ { marginBottom: '1rem' } }>
                 {userPlaylists.map((playlist) => (
-                    <PlaylistCard playlist={playlist} onClick={() => onPlaylistSelect(playlist)} variant={"compact"} />
+                    <PlaylistCard key={playlist.id} playlist={playlist} onClick={() => onPlaylistSelect(playlist)} variant={"compact"} />
                 ))}
             </PlaylistContainer>
 

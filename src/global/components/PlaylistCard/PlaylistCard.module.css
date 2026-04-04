@@ -10,10 +10,6 @@
     overflow: hidden;
 }
 
-.playlistCard:hover {
-    background-color: var(--spotify-light-gray);
-}
-
 .image {
     width: 4rem;
     height: 4rem;
@@ -44,10 +40,18 @@
 }
 
 .tracksCount {
-    color: #b3b3b3;
+    color: var(--spotify-light-gray);
     font-size: 0.75rem;
     margin: 0.5rem 0 0 0;
 }
+
+.playlistCard:hover {
+    background-color: var(--spotify-light-gray);
+    .tracksCount {
+        color: var(--spotify-dark-gray);
+    }
+}
+
 
 /* Wariant Compact */
 .playlistCard.compact {

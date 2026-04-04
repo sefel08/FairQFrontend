@@ -6,26 +6,26 @@ import defaultImage from '../../../assets/spotify_icon.png';
 const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
     
     const [tracks, setTracks] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
-        setLoading(true);
+        setLoadingData(true);
         fetch(`http://127.0.0.1:8080/api/spotify/playlist?playlistId=${selectedPlaylist.id}`, { 
             credentials: 'include' 
         })
             .then(res => res.json())
             .then(data => {
                 setTracks(data);
-                setLoading(false);
+                setLoadingData(false);
             })
             .catch(err => {
                 console.error("Błąd pobierania playlisty:", err);
-                setLoading(false);
+                setLoadingData(false);
             });
     }, [selectedPlaylist.id]);
 
     
-    if (loading) {
+    if (loadingData) {
         return <div className={styles.loadingText}>Ładowanie utworów...</div>;
     }
 
