@@ -5,17 +5,17 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const UserProfile = () => { 
     
-    const { user, authorized, login } = useAuth();
+    const { user, spotifyAuthorized, login } = useAuth();
 
     return (
         <div 
-        className={`${styles.profileCard} ${!authorized ? styles.loginPointer : ''}`} 
-        onClick={!authorized ? login : undefined}
+        className={`${styles.profileCard} ${!spotifyAuthorized ? styles.loginPointer : ''}`} 
+        onClick={!spotifyAuthorized ? login : undefined}
         >
-        {authorized && user ? (
+        {spotifyAuthorized && user ? (
             <>
-            <img className={styles.avatar} src={(user.image_url === 'None') ? default_avatar_image : user.image_url} alt={user.name} />
-            <span className={styles.username}>{user.name}</span>
+            <img className={styles.avatar} src={(user.imageUrl === 'None') ? default_avatar_image : user.imageUrl} alt={user.displayName} />
+            <span className={styles.username}>{user.displayName}</span>
             </>
         ) : (
             <>

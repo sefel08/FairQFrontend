@@ -1,28 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styles from './PlayerView.module.css';
 import { useAuth } from '../../global/contexts/AuthContext';
+import { usePlayer } from '../contexts/PlayerContext';
 import image from '../../assets/Wlaz_Normal.png';
 import Navbar from '../../global/components/Navbar/Navbar';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PlayerView = () => {
-  const { authorized, login, user } = useAuth();
+  const { spotifyAuthorized, login, user, loadingAuth } = useAuth();
+  const { partyId, joinPassword, currentTrack, progressMs, progressPercent } = usePlayer();
 
-  // party settings
-  const [partyId, setPartyId] = useState(null);
-  const [partyCode, setPartyCode] = useState("ROCK-WAVE-99");
-  const [joinPassword, setJoinPassword] = useState('1462');
-
-  //track info
-  const [currentTrack, setCurrentTrack] = useState({
-      title: "Blinding Lights",
-      artist: "The Weeknd, Mata, Gverilla, Beteo, Kuba Knap",
-      albumCover: "https://i.scdn.co/image/ab67616d00001e02a0bddede36c718a8f58b33ae",
-      durationMs: 200000, // 3:20
-  });
-  const [progressMs, setProgressMs] = useState(34000);
-  const progressPercent = (progressMs / currentTrack.durationMs) * 100;
-
-  // view info
   const [joinPanelVisible, setJoinPanelVisible] = useState(true);
 
   const formatTime = (ms) => {
@@ -31,58 +18,78 @@ const PlayerView = () => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  // useEffect(() => {
-  //   if (loadingAuth) return;
-  //   if (!authorized) login();
-  //   else if (!partyId) {
-  //     fetch('http://127.0.0.1:8080/api/party/create', { method: 'POST', credentials: 'include'})
-  //       .then(response => {
-  //         if (!response.ok) {
-  //           throw new Error('Serwer zwrócił błąd: ' + response.status);
-  //         }
-  //       })
-  //       .then(setPartyId(user.spotifyId));
-  //   }
-  // }, [authorized, loadingAuth]);
-
-  // if (!authorized) {
-  //   return <div>Przekierowywanie do logowania...</div>;
-  // }
+  if (loadingAuth) {
+    return <h2>Loading...</h2>;
+  }
 
   return (
     <div className={styles.playerViewContainer}>
       
       {/* JOIN BOX */}
-      <div className={styles.joinPanel}>
-
-        {!joinPanelVisible && (
-          <button className={styles.showButton} onClick={() => setJoinPanelVisible(true)}>
-            Pokaż kod
-          </button>
-        )}
-
-        <div className={styles.panelContent}>
-          <div className={styles.qrContainer}>
-            <img src={image} alt="QR Code" className={styles.qrImage} />
-          </div>
+      <motion.div 
+        layout
+        initial={false}
+        animate={{ 
+          borderRadius: joinPanelVisible ? "15px" : "30px", 
+        }}
+        transition={{ 
+          type: "tween", 
+          ease: "easeInOut", 
+          duration: 0.3 
+        }}
+        className={`${styles.joinPanel} ${!joinPanelVisible ? styles.joinPanelHidden : ''}`}
+      >
+        <AnimatePresence mode="wait">
           
-          <div className={styles.textCodes}>
-            <div className={styles.codeGroup}>
-              <p className={styles.codeLabel}>KOD IMPREZY</p>
-              <p className={styles.partyCode}>{partyCode}</p>
-            </div>
-            <div className={styles.codeGroup}>
-              <p className={styles.codeLabel}>HASŁO (PIN)</p>
-              <p className={styles.joinPassword}>{joinPassword}</p>
-            </div>
-          </div>
+          {!joinPanelVisible ? (
+            // Show Button
+            <motion.button
+              key="show"
+              layout="position"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={styles.showButton}
+              onClick={() => setJoinPanelVisible(true)}
+            >
+              Pokaż kod
+            </motion.button>
+          ) : (
+            // Info panel
+            <motion.div
+              key="content"
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}
+            >
+              <div className={styles.qrContainer}>
+                <img src={image} alt="QR Code" className={styles.qrImage} />
+              </div>
+              
+              <div className={styles.textCodes}>
+                <div className={styles.codeGroup}>
+                  <p className={styles.codeLabel}>KOD IMPREZY</p>
+                  <p className={styles.partyCode}>{partyId}</p>
+                </div>
+                <div className={styles.codeGroup}>
+                  <p className={styles.codeLabel}>HASŁO (PIN)</p>
+                  <p className={styles.joinPassword}>{joinPassword}</p>
+                </div>
+              </div>
 
-          <button className={styles.hideButton} onClick={() => setJoinPanelVisible(false)}>
-            Ukryj
-          </button>
-        </div>
+              <button 
+                className={styles.hideButton} 
+                onClick={() => setJoinPanelVisible(false)}
+              >
+                Ukryj
+              </button>
+            </motion.div>
+          )}
 
-      </div>
+        </AnimatePresence>
+      </motion.div>
 
       {/* MAIN PLAYER */}
       <div className={styles.centralPlayer}>

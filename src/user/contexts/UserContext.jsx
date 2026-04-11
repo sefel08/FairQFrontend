@@ -6,7 +6,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
 
-    const { authorized } = useAuth();
+    const { spotifyAuthorized, loadingAuth } = useAuth();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [queryForResults, setQueryForResults] = useState('');
@@ -19,7 +19,8 @@ export const UserProvider = ({ children }) => {
 
     // Fetch user playlists when authorized state changes
     useEffect(() => {
-        if(!authorized) {
+
+        if(loadingAuth || !spotifyAuthorized) {
             setUserPlaylists([]);
             return;
         }
@@ -29,8 +30,8 @@ export const UserProvider = ({ children }) => {
         })
         .then(res => {
             if (res.status != 200) {
-            console.log("Could not fetch playlists.");
-            return [];
+                console.log("Could not fetch playlists.");
+                return [];
             }
             return res.json();
         })
@@ -38,7 +39,8 @@ export const UserProvider = ({ children }) => {
             setUserPlaylists(data);
         })
         .catch(err => console.error("Błąd", err));
-    }, [authorized]);
+
+    }, [spotifyAuthorized, loadingAuth]);
 
     return (
         <UserContext.Provider value={{ 

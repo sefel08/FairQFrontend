@@ -3,11 +3,11 @@ import styles from "./PlaylistContainer.module.css";
 import { useAuth } from '../../contexts/AuthContext';
 
 const PlaylistContainer = ({ children, style }) => {
-  const { authorized, login } = useAuth();
+  const { spotifyAuthorized, login } = useAuth();
 
   return (
-    <div className={`${styles.playlistContainer} ${authorized ? '' : styles.loggedOut}`} style={style} onClick={authorized ? undefined : login}>
-      {(authorized) ? children :
+    <div className={`${styles.playlistContainer} ${spotifyAuthorized ? '' : styles.loggedOut}`} style={style} onClick={spotifyAuthorized ? undefined : login}>
+      {(spotifyAuthorized) ? children :
         <>
           {[...Array(6)].map((_, i) => (
             <div key={i} className={styles.loggedOutCard}>

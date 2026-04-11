@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import styles from './SelectView.module.css';
 import Slider from '../components/Slider/Slider';
 import { useAuth } from '../contexts/AuthContext';
+import { usePlayer } from '../../player/contexts/PlayerContext';
 
 const SelectView = ({ setCurrentView, setNavbarTabs }) => {
 
-    const { authorized, login } = useAuth();
+    const { spotifyAuthorized, login, loginAsGuest, user } = useAuth();
+    const { setPartyId } = usePlayer();
 
     // global states
     const [acceptedCookies, setAcceptedCookies] = useState(() => localStorage.getItem('acceptedCookies') === 'true' );
@@ -27,8 +29,8 @@ const SelectView = ({ setCurrentView, setNavbarTabs }) => {
         if(
             (acceptedCookies && selectedView) && // nessesary options to go further
             (
-                (anotherView && hostOption && voteToSkipOption && (specifiedPercentage !== -1 || specifiedNumber !== -1)) || // player options
-                ((authorized && selectedView === 'user') || (isGuest && nickname.length > 3)) // user options
+                (spotifyAuthorized && anotherView && hostOption && voteToSkipOption && (specifiedPercentage !== -1 || specifiedNumber !== -1)) || // player options
+                ((spotifyAuthorized && selectedView === 'user') || (isGuest && nickname.length >= 3)) // user options
             )
         ) {
         
@@ -40,8 +42,27 @@ const SelectView = ({ setCurrentView, setNavbarTabs }) => {
             setNavbarTabs(tabs);
             setCurrentView(selectedView);
 
+            // if player create party session with selected options
+            if (selectedView === 'player') {
+                fetch('http://127.0.0.1:8080/api/party/create', {
+                    method: 'POST',
+                    credentials: 'include',
+                })
+                .then( () => setPartyId(user.spotifyId) )
+                .catch( err => console.error("Failed to create party session:", err) );
+            }
         }
+
     }, [acceptedCookies, selectedView, hostOption, anotherView, voteToSkipOption, specifiedPercentage, specifiedNumber, isGuest, nickname]);
+
+    const handleJoin = () => {
+        if (nickname.trim().length < 3) {
+            alert("Nick musi mieć co najmniej 3 znaki!");
+            return;
+        }
+        localStorage.setItem('guestNickname', nickname);
+        loginAsGuest(nickname);
+    };
 
     // cookie consent
     if (!acceptedCookies) {
@@ -86,14 +107,14 @@ const SelectView = ({ setCurrentView, setNavbarTabs }) => {
     // player view
     if (selectedView === 'player') {
 
-        if (!authorized) {
+        if (!spotifyAuthorized) {
             return (
                 <div className={styles.container}>
                     <div className={styles.cardWrapper}>
                         <button className={styles.card} onClick={() => login()}>
                             <div className={styles.icon}>🔓</div>
                             <div className={styles.title}>Zaloguj się</div>
-                            <div className={styles.description}>Zaloguj się, aby stworzyć pokój.</div>
+                            <div className={styles.description}>Zaloguj się przez Spotify, aby stworzyć pokój.</div>
                         </button>
                     </div>
                 </div>
@@ -235,7 +256,7 @@ const SelectView = ({ setCurrentView, setNavbarTabs }) => {
     // user view
     if (selectedView === 'user') {
         
-        if (!authorized && !isGuest) {
+        if (!spotifyAuthorized && !isGuest) {
             return (
                 <div className={styles.container}>
                     <div className={styles.cardWrapper}>
@@ -255,48 +276,39 @@ const SelectView = ({ setCurrentView, setNavbarTabs }) => {
         }
 
         if (isGuest) {
+            return (
+                <div className={styles.container}>
+                    <div className={styles.inputCard}>
+                        <div className={styles.icon}>👤</div>
+                        <h2 className={styles.title}>Podaj swój nick</h2>
+                        <p className={styles.description}>
+                            Twój nick będzie widoczny dla innych przy dodawaniu piosenek do kolejki.
+                        </p>
+                        
+                        <div className={styles.inputWrapper}>
+                            <input
+                                type="text"
+                                className={styles.nicknameInput}
+                                placeholder="Wpisz swój nick..."
+                                value={nickname}
+                                onChange={(e) => setNickname(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
+                                maxLength={20}
+                            />
+                            <span className={styles.charCount}>{nickname.length}/20</span>
+                        </div>
 
-        const handleJoin = () => {
-            if (nickname.trim().length < 3) {
-                alert("Nick musi mieć co najmniej 3 znaki!");
-                return;
-            }
-            localStorage.setItem('guestNickname', nickname);
-        };
-
-        return (
-            <div className={styles.container}>
-                <div className={styles.inputCard}>
-                    <div className={styles.icon}>👤</div>
-                    <h2 className={styles.title}>Podaj swój nick</h2>
-                    <p className={styles.description}>
-                        Twój nick będzie widoczny dla innych przy dodawaniu piosenek do kolejki.
-                    </p>
-                    
-                    <div className={styles.inputWrapper}>
-                        <input
-                            type="text"
-                            className={styles.nicknameInput}
-                            placeholder="Wpisz swój nick..."
-                            value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-                            maxLength={20}
-                        />
-                        <span className={styles.charCount}>{nickname.length}/20</span>
+                        <button 
+                            className={styles.primaryButton} 
+                            onClick={handleJoin}
+                            disabled={nickname.trim().length < 3}
+                        >
+                            Dołącz do imprezy
+                        </button>
                     </div>
-
-                    <button 
-                        className={styles.primaryButton} 
-                        onClick={handleJoin}
-                        disabled={nickname.trim().length < 3}
-                    >
-                        Dołącz do imprezy
-                    </button>
                 </div>
-            </div>
-        );
-    }
+            );
+        }
 
     }
 

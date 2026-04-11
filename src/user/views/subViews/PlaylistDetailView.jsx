@@ -51,6 +51,7 @@ const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
             <div className={styles.tracksList}>
                 {tracks.map((track) => (
                     <TrackCard 
+                        key={track.id}
                         track={track} 
                         onClick={onTrackClick} 
                     />

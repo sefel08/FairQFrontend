@@ -25,33 +25,52 @@ body {
 /* JOIN PANEL */
 .joinPanel {
   position: absolute;
-  top: min(min(6vw, 6vh), 80px);
-  right: min(min(6vw, 6vh), 80px); 
+  top: min(6vmin, 80px);
+  right: min(6vmin, 80px); 
   z-index: 100;
-  width: clamp(130px, 12vw, 300px);
-  max-height: 800px;
-  opacity: 1;
 
+  width: clamp(130px, 12vw, 300px);
   padding: min(2vh, 2vw);
   padding: min(2dvh, 2dvw);
-  
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  
-  background-color: rgba(25, 25, 25, 0.6);
-  text-align: center;
-}
-.panelContent {
-  width: 100%;
-  opacity: 1;
+  height: auto;
+  max-height: 800px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: min(1.5vh, 1.5vw);
   gap: min(1.5dvh, 1.5dvw);
-
-  transition: opacity 0.3s ease;
+  
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  background-color: rgba(25, 25, 25, 0.6);
+  text-align: center;
+  overflow: hidden;
+}
+.joinPanelHidden {
+  height: 3rem;
+  padding: 0;
+}
+.hideButton, .showButton {
+  width: 100%;
+  font-size: clamp(12px, 1vh, 28px);
+  font-size: clamp(12px, 1dvh, 28px);
+  padding: 0.5vh 0;
+  padding: 0.5dvh 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-radius: 30px;
+  border: solid 1px rgba(255, 255, 255, 0.05);
+}
+.showButton {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
 }
 .qrContainer {
   background-color: rgb(43, 41, 41);
@@ -92,27 +111,6 @@ body {
   font-weight: 900;
   letter-spacing: 3px;
   margin: 0;
-}
-.hideButton, .showButton {
-  width: 100%;
-  font-size: clamp(12px, 1vh, 28px);
-  font-size: clamp(12px, 1dvh, 28px);
-  padding: 0.5vh 0;
-  padding: 0.5dvh 0;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border-radius: 1vh;
-  border-radius: 1dvh;
-  border: solid 1px rgba(255, 255, 255, 0.05);
-}
-.showButton {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent;
-  border: none;
 }
 
 /* MAIN PLAYER */

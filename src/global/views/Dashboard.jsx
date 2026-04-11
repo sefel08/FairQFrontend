@@ -38,7 +38,12 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboard}>
 
-      {currentView === 'player' ? (
+      {
+      !authorized ? (
+        <PlayerProvider>
+          <SelectView setCurrentView={handleViewChange} setNavbarTabs={handleTabsChange} />
+        </PlayerProvider>
+      ) : currentView === 'player' ? (
         <PlayerProvider>
           <PlayerView />
         </PlayerProvider>
@@ -46,9 +51,11 @@ const Dashboard = () => {
         <UserProvider>
           <UserView goBackToViewSelection={resetView} />
         </UserProvider>
-      ) : (
-        <SelectView setCurrentView={handleViewChange} setNavbarTabs={handleTabsChange} />
-      )}
+      ) : 
+        <PlayerProvider>
+          <SelectView setCurrentView={handleViewChange} setNavbarTabs={handleTabsChange} />
+        </PlayerProvider>
+      }
       
       {navbarTabs.length > 0 &&
         <Navbar tabs={navbarTabs} changeView={handleViewChange} />

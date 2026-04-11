@@ -1,9 +1,9 @@
 .profileCard {
   display: flex;
   align-items: center;
-  gap: 8px; 
+  gap: 16px; 
+  padding: 16px;
   background-color: #181818;
-  padding: 8px;
   border-radius: 12px;
   transition: all 0.2s ease-in-out;
   border: 1px solid #282828;

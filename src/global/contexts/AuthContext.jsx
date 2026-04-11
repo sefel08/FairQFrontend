@@ -4,33 +4,52 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [authorized, setAuth] = useState(false);
+    const [spotifyAuthorized, setSpotifyAuth] = useState(false);
+    const [user, setUser] = useState({ spotifyId: '', displayName: '', imageUrl: '' });
+
     const [loadingAuth, setLoadingAuth] = useState(true);
-    const [user, setUser] = useState({ spotifyId: '', name: '', email: '', image_url: '' });
 
     const refreshStatus = async () => {
-        if(authorized) return;
+        if(authorized && spotifyAuthorized) return;
+
+        setLoadingAuth(true);
+
         try {
             const res = await fetch('http://127.0.0.1:8080/api/status', { credentials: 'include' });
             const data = await res.json();
             
             setAuth(data.isLoggedIn);
-            
+
             if (data.isLoggedIn) {
+                setSpotifyAuth(data.isSpotifyAuthenticated);
                 setUser({
                     spotifyId: data.spotifyId,
-                    name: data.name,
-                    email: data.email,
-                    image_url: data.image_url
+                    displayName: data.displayName,
+                    imageUrl: data.imageUrl
                 });
             }
+            
         } catch (err) {
             console.error("Sesja wygasła lub błąd połączenia");
         } finally {
             setLoadingAuth(false);
         }
+
     };
     const login = () => {
         window.location.href = 'http://127.0.0.1:8080/oauth2/authorization/spotify';
+    };
+    const loginAsGuest = (displayName) => {
+        fetch('http://127.0.0.1:8080/api/user/login-as-guest', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'Text/plain'
+            },
+            body: displayName
+        }).then(
+            () => refreshStatus()
+        );
     };
 
     useEffect(() => {
@@ -38,7 +57,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ authorized, loadingAuth, user, login, refreshStatus }}>
+        <AuthContext.Provider value={{ authorized, spotifyAuthorized, loadingAuth, user, login, refreshStatus, loginAsGuest }}>
             {children}
         </AuthContext.Provider>
     );
