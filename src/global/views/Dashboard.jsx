@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import SelectView from './SelectView';
 import PlayerView from '../../player/views/PlayerView';
 import UserView from '../../user/views/UserView';
+import PartyView from '../../user/views/PartyView';
 import { UserProvider } from '../../user/contexts/UserContext';
 import { PlayerProvider } from '../../player/contexts/PlayerContext';
 import { PartyProvider } from '../contexts/PartyContext';
@@ -51,6 +52,10 @@ const Dashboard = () => {
           <UserProvider>
             <UserView goBackToViewSelection={resetView} />
           </UserProvider>
+        ) : currentView === 'party' ? (
+          <PartyProvider>
+            <PartyView />
+          </PartyProvider>
         ) : 
             <SelectView setNavbarTabs={handleTabsChange} />
         }

@@ -41,12 +41,27 @@ export const PartyProvider = ({ children, changeView }) => {
         })
         .catch( err => console.error("Failed to join party session:", err) );
     };
+    const getPartyQueue = () => {
+        return fetch(`http://127.0.0.1:8080/api/party/partyQueue`, {
+            method: 'GET',
+            credentials: 'include',
+        }).then( (res) => {
+            if (res.ok) return res.json();
+            return [];
+        }).catch( err => {
+            console.error("Failed to get party queue:", err) 
+            return [];
+        });
+    };
+
 
     return (
-        <PartyContext.Provider value={{ partyId, createPartySession, joinPartySession, createPartySessionAndJoin }}>
+        <PartyContext.Provider value={{ partyId, createPartySession, joinPartySession, createPartySessionAndJoin, getPartyQueue }}>
             {children}
         </PartyContext.Provider>
     );
 };
 
-export const useParty = () => useContext(PartyContext);
+export const useParty = () => {
+    return useContext(PartyContext);
+}

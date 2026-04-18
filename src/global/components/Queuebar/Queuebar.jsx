@@ -1,30 +1,22 @@
 import React from 'react';
 import styles from './Queuebar.module.css';
+import TrackCard from '../TrackCard/TrackCard';
+import { useUser } from '../../../user/contexts/UserContext';
 
 const Queuebar = ({ queue = [] }) => {
+
+    const { removeFromQueue } = useUser();
+
     return (
         <aside className={styles.container}>
-            <h3 className={styles.title}>Kolejka</h3>
-            
             <div className={styles.scrollArea}>
+                <h3 className={styles.title}>Kolejka</h3>
                 {queue.length > 0 ? (
                     queue.map((track, index) => (
-                        <div key={`${track.id}-${index}`} className={styles.trackCard}>
-                            <img 
-                                src={track.imageUrl || 'https://via.placeholder.com/45'} 
-                                alt={track.name} 
-                                className={styles.image} 
-                            />
-                            <div className={styles.info}>
-                                <p className={styles.trackTitle}>{track.name}</p>
-                                <p className={styles.trackArtist}>
-                                    {track.artists && track.artists.join(', ')}
-                                </p>
-                            </div>
-                        </div>
+                        <TrackCard key={index} track={track} onClick={() => { removeFromQueue(index) }}/>
                     ))
                 ) : (
-                    <p style={{ color: '#b3b3b3', textAlign: 'center', fontSize: '14px' }}>
+                    <p style={{ color: '#b3b3b3', textAlign: 'center', fontSize: '1.25rem' }}>
                         Kolejka jest pusta
                     </p>
                 )}

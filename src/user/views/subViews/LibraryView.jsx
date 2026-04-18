@@ -20,7 +20,7 @@ const LibraryView = ({ userPlaylists, onPlaylistSelect }) => {
             </header>
 
             {/* playlist cards */}
-            <div className={styles.list}>
+            <div className={`${styles.list} ${styles.playlistList}`}>
                 {userPlaylists.map(playlist => (
                     <PlaylistCard key={playlist.id} playlist={playlist} onClick={() => onPlaylistSelect(playlist)} />
                 ))}

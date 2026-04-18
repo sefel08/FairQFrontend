@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useAuth } from '../../global/contexts/AuthContext';
 import { useUser } from '../contexts/UserContext';
@@ -7,12 +7,11 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import MainBox from '../components/Mainbox/MainBox';
 import Queuebar from '../../global/components/Queuebar/Queuebar';
 import styles from './UserView.module.css';
-import Navbar from '../../global/components/Navbar/Navbar';
 
 const UserView = ({ goBackToViewSelection }) => {
     
     const { user, authorized, login } = useAuth();
-    const { queue } = useUser();
+    const { queue, refreshUserQueue } = useUser();
     
     const [currentSubView, setCurrentSubView] = useState('home');
     const [lastView, setLastView] = useState('home');
@@ -23,6 +22,10 @@ const UserView = ({ goBackToViewSelection }) => {
 
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isQueueOpen, setQueueOpen] = useState(false);
+
+    useEffect(() => {
+        refreshUserQueue();
+    }, []);
 
     return (
         <div className={styles.container}>
@@ -40,6 +43,7 @@ const UserView = ({ goBackToViewSelection }) => {
                 <MainBox userName={user.name} currentView={currentSubView} lastView={lastView} setView={handleViewChange} />
                 <button className={styles.showQueueBtn} onClick={() => setQueueOpen(true)}>Pokaż kolejkę</button>
             </main>
+
 
             {/* Hidden Items */}
 

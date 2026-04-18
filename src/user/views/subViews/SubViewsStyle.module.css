@@ -26,8 +26,13 @@
 .list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 2vh;
+    gap: 2dvh;
     width: 100%;
+}
+.playlistList {
+    gap: 1vh;
+    gap: 1dvh;
 }
 
 .grid {

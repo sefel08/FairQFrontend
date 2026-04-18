@@ -53,7 +53,7 @@ const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
                     <TrackCard 
                         key={track.id}
                         track={track} 
-                        onClick={onTrackClick} 
+                        onClick={() => onTrackClick(track.id)} 
                     />
                 ))}
             </div>

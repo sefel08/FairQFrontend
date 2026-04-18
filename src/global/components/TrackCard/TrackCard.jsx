@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './TrackCard.module.css';
 
-const TrackCard = ({ track, onClick }) => {
+const TrackCard = ({ track, onClick, squared }) => {
   
   const formatTime = (ms) => {
     const minutes = Math.floor(ms / 60000);
@@ -10,11 +10,11 @@ const TrackCard = ({ track, onClick }) => {
   };
 
   return (
-    <div className={styles.trackCard} onClick={() => onClick?.(track)}>
+    <div className={styles.trackCard + (squared ? ' ' + styles.squared : '')} onClick={() => onClick?.(track)}>
       <img 
         src={track.imageUrl} 
         alt={track.name} 
-        className={styles.albumImage} 
+        className={styles.albumImage + (squared ? ' ' + styles.squared : '')} 
       />
       
       <div className={styles.trackDetails}>

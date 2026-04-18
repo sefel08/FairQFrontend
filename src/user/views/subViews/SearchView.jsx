@@ -7,7 +7,9 @@ const SearchView = ({ scrollRef, onTrackClick, setSearchQuery, searchQuery, sear
 
     const searchTracks = async (query) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/spotify/search?query=${encodeURIComponent(query)}`);
+            const res = await fetch(`http://127.0.0.1:8080/api/spotify/search?query=${encodeURIComponent(query)}`, {
+                credentials: 'include',
+            });
             
             if (res.status !== 200) {
                 console.log('error while searching tracks: ', res.status);
@@ -46,7 +48,7 @@ const SearchView = ({ scrollRef, onTrackClick, setSearchQuery, searchQuery, sear
 
             <div className={styles.list}>
                 {searchResults.map((track) => (
-                    <TrackCard key={track.id} track={track} onClick={onTrackClick} />
+                    <TrackCard key={track.id} track={track} onClick={() => onTrackClick(track.id)} />
                 ))}
             </div>
         </div>

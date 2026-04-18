@@ -42,14 +42,45 @@ export const UserProvider = ({ children }) => {
 
     }, [spotifyAuthorized, loadingAuth]);
 
+    const refreshUserQueue = () => {
+        fetch('http://127.0.0.1:8080/api/party/queue', {
+            credentials: 'include',
+        })
+        .then(res => res.json())
+        .then(data => {
+            setQueue(data);
+        })
+        .catch(err => console.error("Błąd", err));
+    };
+    const addToQueue = (trackId) => {
+        fetch('http://127.0.0.1:8080/api/party/queue', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ trackId })
+        }).then(() => refreshUserQueue());
+    };
+    const removeFromQueue = (index) => {
+        fetch(`http://127.0.0.1:8080/api/party/queue`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ index })
+        }).then(() => refreshUserQueue());
+    };
+
     return (
         <UserContext.Provider value={{ 
             searchResults, setSearchResults, 
             searchQuery, setSearchQuery, 
             queryForResults, setQueryForResults, 
-            userPlaylists, setUserPlaylists, 
+            userPlaylists, refreshUserQueue,
             selectedPlaylist, setSelectedPlaylist,
-            queue, setQueue
+            queue, addToQueue, removeFromQueue
         }}>
             {children}
         </UserContext.Provider>

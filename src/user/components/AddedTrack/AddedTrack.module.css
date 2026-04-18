@@ -1,0 +1,22 @@
+.addedCard {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--spotify-dark-gray);
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.addedBy {
+    color: var(--spotify-gray);
+    background-color: var(--spotify-player);
+    color: var(--spotify-light-gray);
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    padding: 5px 10px;
+}
+.profileName {
+    flex: 1;
+    text-align: right;
+    color: var(--spotify-white);
+}

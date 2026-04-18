@@ -13,7 +13,7 @@ const MainBox = ({ userName, currentView, lastView, setView }) => {
     const { searchResults, setSearchResults,
         searchQuery, setSearchQuery,
         queryForResults, setQueryForResults,
-        userPlaylists, setUserPlaylists,
+        userPlaylists, addToQueue,
         selectedPlaylist, setSelectedPlaylist,
     } = useUser();
     
@@ -29,7 +29,7 @@ const MainBox = ({ userName, currentView, lastView, setView }) => {
             {currentView === 'search' ? (
                 <SearchView 
                     scrollRef={mainBoxRef}
-                    onTrackClick={() => {}}
+                    onTrackClick={(trackId) => addToQueue(trackId)}
                     setSearchQuery={setSearchQuery}
                     searchQuery={searchQuery}
                     searchResults={searchResults}
@@ -54,7 +54,7 @@ const MainBox = ({ userName, currentView, lastView, setView }) => {
                 <PlaylistDetailView 
                     selectedPlaylist={selectedPlaylist} 
                     onBack={() => setView(lastView)}
-                    onTrackClick={() => {}} 
+                    onTrackClick={(trackId) => addToQueue(trackId)}
                 />
             )}
         </div>
