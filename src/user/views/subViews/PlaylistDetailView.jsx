@@ -3,6 +3,8 @@ import TrackCard from '../../../global/components/TrackCard/TrackCard';
 import styles from './SubViewsStyle.module.css';
 import defaultImage from '../../../assets/spotify_icon.png';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
     
     const [tracks, setTracks] = useState([]);
@@ -10,7 +12,7 @@ const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
 
     useEffect(() => {
         setLoadingData(true);
-        fetch(`http://127.0.0.1:8080/api/spotify/playlist?playlistId=${selectedPlaylist.id}`, { 
+        fetch(`${API_BASE_URL}/api/spotify/playlist?playlistId=${selectedPlaylist.id}`, { 
             credentials: 'include' 
         })
             .then(res => res.json())

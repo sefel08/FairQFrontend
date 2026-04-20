@@ -1,11 +1,14 @@
 import { small } from 'framer-motion/client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-export const AuthContext = createContext();
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+export const AuthContext = createContext();
+    
 export const AuthProvider = ({ children }) => {
     const [authorized, setAuth] = useState(false);
     const [spotifyAuthorized, setSpotifyAuth] = useState(false);
+    const [spotifyUserToken, setSpotifyUserToken] = useState(null);
     const [user, setUser] = useState({ displayName: '', imageUrl: '', smallImageUrl: '' });
 
     const [loadingAuth, setLoadingAuth] = useState(true);
@@ -16,7 +19,7 @@ export const AuthProvider = ({ children }) => {
         setLoadingAuth(true);
 
         try {
-            const res = await fetch('http://127.0.0.1:8080/api/status', { credentials: 'include' });
+            const res = await fetch(`${API_BASE_URL}/api/status`, { credentials: 'include' });
             const data = await res.json();
             
             setAuth(data.isLoggedIn);
@@ -28,6 +31,7 @@ export const AuthProvider = ({ children }) => {
                     imageUrl: data.imageUrl,
                     smallImageUrl: data.imageUrlSmall
                 });
+                setSpotifyUserToken(data.spotifyUserToken);
             }
             
         } catch (err) {
@@ -37,11 +41,12 @@ export const AuthProvider = ({ children }) => {
         }
 
     };
-    const login = () => {
-        window.location.href = 'http://127.0.0.1:8080/oauth2/authorization/spotify';
+    const login = (asHost = false) => {
+        const endpoint = asHost ? 'spotify-host' : 'spotify';
+        window.location.href = `${API_BASE_URL}/oauth2/authorization/${endpoint}`;
     };
     const loginAsGuest = (displayName) => {
-        return fetch('http://127.0.0.1:8080/api/user/login-as-guest', {
+        return fetch(`${API_BASE_URL}/api/user/login-as-guest`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -58,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ authorized, spotifyAuthorized, loadingAuth, user, login, refreshStatus, loginAsGuest }}>
+        <AuthContext.Provider value={{ authorized, spotifyAuthorized, loadingAuth, user, login, refreshStatus, loginAsGuest, spotifyUserToken }}>
             {children}
         </AuthContext.Provider>
     );

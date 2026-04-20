@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import styles from './Dashboard.module.css';
 import { useAuth } from '../contexts/AuthContext';
 import SelectView from './SelectView';
@@ -9,11 +9,13 @@ import { UserProvider } from '../../user/contexts/UserContext';
 import { PlayerProvider } from '../../player/contexts/PlayerContext';
 import { PartyProvider } from '../contexts/PartyContext';
 import Navbar from '../components/Navbar/Navbar';
+import SpotifySDKContainer from '../../player/components/SpotifySDKContainer';
 
 const Dashboard = () => {
   
   const { authorized, loadingAuth } = useAuth();
 
+  const [isPlayer, setIsPlayer] = useState(() => localStorage.getItem('isPlayer') === 'true');
   const [currentView, setCurrentView] = useState(() => localStorage.getItem('currentView') || null);
   const [navbarTabs, setNavbarTabs] = useState(() => {
     const savedTabs = localStorage.getItem('navbarTabs');
@@ -24,6 +26,10 @@ const Dashboard = () => {
     setCurrentView(null);
     localStorage.removeItem('currentView');
   }
+  const handleSetIsPlayer = (val) => {
+    setIsPlayer(val);
+    localStorage.setItem('isPlayer', val);
+  };
   const handleViewChange = (view) => {
     setCurrentView(view);
     localStorage.setItem('currentView', view);
@@ -32,6 +38,7 @@ const Dashboard = () => {
     localStorage.setItem('navbarTabs', JSON.stringify(tabs));
     setNavbarTabs(tabs);
   }
+
 
   if (loadingAuth) {
     return <div className={styles.loading}>Ładowanie...</div>;
@@ -42,8 +49,12 @@ const Dashboard = () => {
 
       <PartyProvider changeView={handleViewChange}>
         {
+          isPlayer && <SpotifySDKContainer />
+        }
+
+        {
         !authorized ? (
-            <SelectView setNavbarTabs={handleTabsChange} />
+            <SelectView setNavbarTabs={handleTabsChange} setIsPlayer={handleSetIsPlayer} />
         ) : currentView === 'player' ? (
           <PlayerProvider>
             <PlayerView />
@@ -53,11 +64,9 @@ const Dashboard = () => {
             <UserView goBackToViewSelection={resetView} />
           </UserProvider>
         ) : currentView === 'party' ? (
-          <PartyProvider>
-            <PartyView />
-          </PartyProvider>
+          <PartyView />
         ) : 
-            <SelectView setNavbarTabs={handleTabsChange} />
+            <SelectView setNavbarTabs={handleTabsChange} setIsPlayer={handleSetIsPlayer} />
         }
       </PartyProvider>
       

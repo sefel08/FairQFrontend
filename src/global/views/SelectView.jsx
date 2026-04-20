@@ -4,7 +4,7 @@ import Slider from '../components/Slider/Slider';
 import { useAuth } from '../contexts/AuthContext';
 import { useParty } from '../contexts/PartyContext';
 
-const SelectView = ({ setNavbarTabs }) => {
+const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
 
     const { spotifyAuthorized, login, loginAsGuest } = useAuth();
     const { createPartySession, joinPartySession, createPartySessionAndJoin, partyId } = useParty();
@@ -39,6 +39,8 @@ const SelectView = ({ setNavbarTabs }) => {
         if (hostOption === 'local') tabs.push({ name: 'Host Settings', value: 'hostSettings' });
         setNavbarTabs(tabs);
         
+        setIsPlayer(selectedView === 'player');
+
         if (selectedView === 'player') {
             if (anotherView === 'both') {
                 createPartySessionAndJoin();
@@ -114,7 +116,7 @@ const SelectView = ({ setNavbarTabs }) => {
             return (
                 <div className={styles.container}>
                     <div className={styles.cardWrapper}>
-                        <button className={styles.card} onClick={() => login()}>
+                        <button className={styles.card} onClick={() => login(true)}>
                             <div className={styles.icon}>🔓</div>
                             <div className={styles.title}>Zaloguj się</div>
                             <div className={styles.description}>Zaloguj się przez Spotify, aby stworzyć pokój.</div>

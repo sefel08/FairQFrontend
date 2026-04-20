@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, use } from 'react';
-
 import { useAuth } from '../../global/contexts/AuthContext';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const UserContext = createContext();
 
@@ -25,7 +26,7 @@ export const UserProvider = ({ children }) => {
             return;
         }
         
-        fetch('http://127.0.0.1:8080/api/spotify/user-playlists', {
+        fetch(`${API_BASE_URL}/api/spotify/user-playlists`, {
             credentials: 'include',
         })
         .then(res => {
@@ -43,7 +44,7 @@ export const UserProvider = ({ children }) => {
     }, [spotifyAuthorized, loadingAuth]);
 
     const refreshUserQueue = () => {
-        fetch('http://127.0.0.1:8080/api/party/queue', {
+        fetch(`${API_BASE_URL}/api/party/queue`, {
             credentials: 'include',
         })
         .then(res => res.json())
@@ -53,7 +54,7 @@ export const UserProvider = ({ children }) => {
         .catch(err => console.error("Błąd", err));
     };
     const addToQueue = (trackId) => {
-        fetch('http://127.0.0.1:8080/api/party/queue', {
+        fetch(`${API_BASE_URL}/api/party/queue`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -63,7 +64,7 @@ export const UserProvider = ({ children }) => {
         }).then(() => refreshUserQueue());
     };
     const removeFromQueue = (index) => {
-        fetch(`http://127.0.0.1:8080/api/party/queue`, {
+        fetch(`${API_BASE_URL}/api/party/queue`, {
             method: 'DELETE',
             credentials: 'include',
             headers: {

@@ -3,11 +3,13 @@ import SearchBox from '../../components/SearchBox/SearchBox';
 import TrackCard from '../../../global/components/TrackCard/TrackCard';
 import styles from './SubViewsStyle.module.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const SearchView = ({ scrollRef, onTrackClick, setSearchQuery, searchQuery, searchResults, setSearchResults, queryForResults, setQueryForResults }) => {
 
     const searchTracks = async (query) => {
         try {
-            const res = await fetch(`http://127.0.0.1:8080/api/spotify/search?query=${encodeURIComponent(query)}`, {
+            const res = await fetch(`${API_BASE_URL}/api/spotify/search?query=${encodeURIComponent(query)}`, {
                 credentials: 'include',
             });
             

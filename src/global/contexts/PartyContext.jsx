@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 export const PartyContext = createContext();
 
 export const PartyProvider = ({ children, changeView }) => {
@@ -16,7 +18,7 @@ export const PartyProvider = ({ children, changeView }) => {
         });
     };
     const createPartySession = () => {
-        return fetch('http://127.0.0.1:8080/api/party', {
+        return fetch(`${API_BASE_URL}/api/party`, {
             method: 'POST',
             credentials: 'include',
         })
@@ -34,7 +36,7 @@ export const PartyProvider = ({ children, changeView }) => {
         });
     };
     const joinPartySession = (partyId) => {
-        fetch(`http://127.0.0.1:8080/api/party/join?partyId=${partyId}`, {
+        fetch(`${API_BASE_URL}/api/party/join?partyId=${partyId}`, {
             method: 'POST',
             credentials: 'include',
         })
@@ -47,7 +49,7 @@ export const PartyProvider = ({ children, changeView }) => {
         .catch( err => console.error("Failed to join party session:", err) );
     };
     const getPartyQueue = () => {
-        return fetch(`http://127.0.0.1:8080/api/party/partyQueue`, {
+        return fetch(`${API_BASE_URL}/api/party/partyQueue`, {
             method: 'GET',
             credentials: 'include'
         }).then( (res) => {
@@ -59,9 +61,9 @@ export const PartyProvider = ({ children, changeView }) => {
         });
     };
     const getPartyUsers = () => {
-        return fetch(`http://127.0.0.1:8080/api/party/users`, {
+        return fetch(`${API_BASE_URL}/api/party/users`, {
             method: 'GET',
-            credentials: `include`
+            credentials: 'include'
         }).then( (res) => {
             if (res.ok) return res.json();
             return [];
