@@ -1,6 +1,7 @@
 import React, { useState, useEffect, use } from 'react';
 import styles from './Dashboard.module.css';
 import { useAuth } from '../contexts/AuthContext';
+import { useParty } from '../contexts/PartyContext';
 import SelectView from './SelectView';
 import PlayerView from '../../player/views/PlayerView';
 import UserView from '../../user/views/UserView';
@@ -10,10 +11,14 @@ import { PlayerProvider } from '../../player/contexts/PlayerContext';
 import { PartyProvider } from '../contexts/PartyContext';
 import Navbar from '../components/Navbar/Navbar';
 import SpotifySDKContainer from '../../player/components/SpotifySDKContainer';
+import { tr } from 'framer-motion/client';
 
 const Dashboard = () => {
   
   const { authorized, loadingAuth } = useAuth();
+  const { loadingParty, partyId } = useParty();
+
+  const [clickedSomething, setClickedSomething] = useState(false);
 
   const [isPlayer, setIsPlayer] = useState(() => localStorage.getItem('isPlayer') === 'true');
   const [currentView, setCurrentView] = useState(() => localStorage.getItem('currentView') || null);
@@ -27,6 +32,8 @@ const Dashboard = () => {
     localStorage.removeItem('currentView');
   }
   const handleSetIsPlayer = (val) => {
+    //set that user clicked something because it is redirect from select view
+    setClickedSomething(true);
     setIsPlayer(val);
     localStorage.setItem('isPlayer', val);
   };
@@ -39,36 +46,45 @@ const Dashboard = () => {
     setNavbarTabs(tabs);
   }
 
-
-  if (loadingAuth) {
+  if (loadingAuth || loadingParty) {
     return <div className={styles.loading}>Ładowanie...</div>;
+  }
+
+  if (!authorized || !partyId) {
+    return <SelectView setNavbarTabs={handleTabsChange} setIsPlayer={handleSetIsPlayer}/>;
+  }
+
+  // Make sure user clicks something to disable auto-play block in browsers
+  if (!clickedSomething && isPlayer) {
+    return (
+      <div style={{ width: '100%', height: '100%', fontSize: '4rem' }} onClick={() => setClickedSomething(true)}>
+        Kliknij w ekran, aby uruchomić odtwarzacz Spotify
+      </div>
+    );
   }
 
   return (
     <div className={styles.dashboard}>
 
-      <PartyProvider changeView={handleViewChange}>
+      <UserProvider>
+
         {
           isPlayer && <SpotifySDKContainer />
         }
 
-        {
-        !authorized ? (
-            <SelectView setNavbarTabs={handleTabsChange} setIsPlayer={handleSetIsPlayer} />
-        ) : currentView === 'player' ? (
+        {currentView === 'player' ? (
           <PlayerProvider>
             <PlayerView />
           </PlayerProvider>
         ) : currentView === 'user' ? (
-          <UserProvider>
-            <UserView goBackToViewSelection={resetView} />
-          </UserProvider>
+          <UserView goBackToViewSelection={resetView} />
         ) : currentView === 'party' ? (
           <PartyView />
-        ) : 
-            <SelectView setNavbarTabs={handleTabsChange} setIsPlayer={handleSetIsPlayer} />
-        }
-      </PartyProvider>
+        ) : (
+          <p>Something went wrong</p>
+        )}
+
+      </UserProvider>
       
       {navbarTabs.length > 0 &&
         <Navbar tabs={navbarTabs} changeView={handleViewChange} />

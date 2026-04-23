@@ -5,9 +5,11 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const PartyContext = createContext();
 
-export const PartyProvider = ({ children, changeView }) => {
+export const PartyProvider = ({ children }) => {
     
     const { user, loadingAuth } = useAuth();
+
+    const [loadingParty, setLoadingParty] = useState(true);
 
     const [partyId, setPartyId] = useState('');
     const [joinPassword, setJoinPassword] = useState('1462');
@@ -29,7 +31,8 @@ export const PartyProvider = ({ children, changeView }) => {
                 setPartyId(data.partyId);
                 setIsHost(data.isHost);
             }
-        }).catch( err => {
+        }).finally(() => setLoadingParty(false)
+        ).catch( err => {
             console.error("Failed to fetch party status:", err);
         });
 
@@ -51,7 +54,6 @@ export const PartyProvider = ({ children, changeView }) => {
         })
         .then((partyId) => {
             setPartyId(partyId);
-            changeView('party');
             return partyId;
         })
         .catch((err) => {
@@ -66,7 +68,6 @@ export const PartyProvider = ({ children, changeView }) => {
         .then( (res) => {
             if (res.ok) {
                 setPartyId(partyId);
-                changeView('user');
             }
         })
         .catch( err => console.error("Failed to join party session:", err) );
@@ -98,7 +99,7 @@ export const PartyProvider = ({ children, changeView }) => {
     }
 
     return (
-        <PartyContext.Provider value={{ partyId, createPartySession, joinPartySession, createPartySessionAndJoin, getPartyQueue, getPartyUsers }}>
+        <PartyContext.Provider value={{ loadingParty, partyId, createPartySession, joinPartySession, createPartySessionAndJoin, getPartyQueue, getPartyUsers }}>
             {children}
         </PartyContext.Provider>
     );

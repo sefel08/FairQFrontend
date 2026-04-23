@@ -6,8 +6,6 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 const SpotifySDKContainer = () => {
     const { spotifyUserToken } = useAuth();
 
-    const [isPlayerReady, setIsPlayerReady] = useState(false);
-
     const playerInstance = useRef(null);
     const currentDeviceId = useRef(null);
     const isFetchingNext = useRef(false);
@@ -18,8 +16,6 @@ const SpotifySDKContainer = () => {
         fetch(`${API_BASE_URL}/api/player/playNext`, {
             method: 'POST',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ deviceId: currentDeviceId.current, newTrackId: lastTrackId.current })
         });
     };
 
@@ -45,17 +41,19 @@ const SpotifySDKContainer = () => {
             p.addListener('ready', ({ device_id }) => {
                 console.log('Player ready with ID:', device_id);
                 currentDeviceId.current = device_id;
-                setIsPlayerReady(true);
                 
+                setTimeout(() => {
+                    isFetchingNext.current = false;
+                }, 1500);
+
                 fetch(`${API_BASE_URL}/api/player/setup`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         deviceId: device_id, 
-                        playlistUri: "spotify:playlist:5lgUkd77vPhJaWQiE194XQ" 
                     })
-                });
+                }).then(() => handleSongEndedOnBackend());
             });
 
             p.addListener('player_state_changed', state => {

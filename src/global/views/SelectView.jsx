@@ -11,20 +11,20 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
 
     // global states
     const [acceptedCookies, setAcceptedCookies] = useState(() => localStorage.getItem('acceptedCookies') === 'true' );
-    const [selectedView, setSelectedView] = useState(() => localStorage.getItem('selectedView') || null );
+    const [selectedView, setSelectedView] = useState(null);
     
     // player view states
-    const [hostOption, setHostOption] = useState(() => localStorage.getItem('hostOption') || null );
-    const [anotherView, setAnotherView] = useState(() => localStorage.getItem('anotherView') || null );
-    const [voteToSkipOption, setVoteToSkipOption] = useState(() => localStorage.getItem('voteToSkipOption') || null );
-    const [specifiedPercentage, setSpecifiedPercentage] = useState(() => localStorage.getItem('specifiedPercentage') || -1 );
-    const [specifiedNumber, setSpecifiedNumber] = useState(() => localStorage.getItem('specifiedNumber') || -1 );
+    const [hostOption, setHostOption] = useState(null);
+    const [anotherView, setAnotherView] = useState(null);
+    const [voteToSkipOption, setVoteToSkipOption] = useState(null);
+    const [specifiedPercentage, setSpecifiedPercentage] = useState(-1);
+    const [specifiedNumber, setSpecifiedNumber] = useState(-1);
 
     // user view states
     const [isGuest, setIsGuest] = useState(false);
     const [nickname, setNickname] = useState(() => localStorage.getItem('nickname') || '' );
     const [nicknameSubmitted, setNicknameSubmitted] = useState(false);
-    const [enteredPartyId, setEnteredPartyId] = useState(() => localStorage.getItem('enteredPartyId') || '' );
+    const [enteredPartyId, setEnteredPartyId] = useState('');
 
     
     const handleParty = () => {
@@ -94,12 +94,12 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
         return (
             <div className={styles.container}>
                 <div className={styles.cardWrapper}>
-                    <button className={styles.card} onClick={() => { setSelectedView('player'); localStorage.setItem('selectedView', 'player'); }}>
+                    <button className={styles.card} onClick={() => setSelectedView('player')}>
                         <div className={styles.icon}>📻</div>
                         <div className={styles.title}>Player</div>
                         <div className={styles.description}>Zarządzaj odtwarzaniem muzyki, kolejką i ustawieniami pokoju.</div>
                     </button>
-                    <button className={styles.card} onClick={() => { setSelectedView('user'); localStorage.setItem('selectedView', 'user'); }}>
+                    <button className={styles.card} onClick={() => setSelectedView('user')}>
                         <div className={styles.icon}>🎧</div>
                         <div className={styles.title}>User</div>
                         <div className={styles.description}>Zarządzaj ustawieniami konta, preferencjami i historią odtwarzania.</div>
@@ -130,17 +130,17 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
             return (
                 <div className={styles.container}>
                     <div className={styles.cardWrapper}>
-                        <button className={styles.card} onClick={() => { setHostOption('remote'); localStorage.setItem('hostOption', 'remote'); }}>
+                        <button className={styles.card} onClick={() => setHostOption('remote')}>
                             <div className={styles.icon}>📱</div>
                             <div className={styles.title}>Host zdalny</div>
                             <div className={styles.description}>Stwórz pokój i zarządzaj nim z innego urządzenia.</div>
                         </button>
-                        <button className={styles.card} onClick={() => { setHostOption('local'); localStorage.setItem('hostOption', 'local'); }}>
+                        <button className={styles.card} onClick={() => setHostOption('local')}>
                             <div className={styles.icon}>📻</div>
                             <div className={styles.title}>Host na tym urządzeniu</div>
                             <div className={styles.description}>Stwórz pokój i zarządzaj nim z tego urządzenia.</div>
                         </button>
-                        <button className={styles.card} onClick={() => { setHostOption('none'); localStorage.setItem('hostOption', 'none'); }}>
+                        <button className={styles.card} onClick={() => setHostOption('none')}>
                             <div className={styles.icon}>🚫</div>
                             <div className={styles.title}>Bez hosta</div>
                             <div className={styles.description}>Stwórz pokój bez hosta.</div>
@@ -159,12 +159,12 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
             return (
                 <div className={styles.container}>
                     <div className={styles.cardWrapper}>
-                        <button className={styles.card} onClick={() => { setAnotherView('both'); localStorage.setItem('anotherView', 'both'); }}>
+                        <button className={styles.card} onClick={() => setAnotherView('both')}>
                             <div className={styles.icon}>📻🎧</div>
                             <div className={styles.title}>Player i User</div>
                             <div className={styles.description}>Zostań wlaścicielem pokoju i dołącz jednocześnie z tego urządzenia.</div>
                         </button>
-                        <button className={styles.card} onClick={() => { setAnotherView('none'); localStorage.setItem('anotherView', 'none'); }}>
+                        <button className={styles.card} onClick={() => setAnotherView('none')}>
                             <div className={styles.icon}>📻</div>
                             <div className={styles.title}>Tylko Player</div>
                             <div className={styles.description}>Tylko stwórz pokój</div>
@@ -178,12 +178,12 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
             return (
                 <div className={styles.container}>
                     <div className={styles.cardWrapper}>
-                        <button className={styles.card} onClick={() => { setVoteToSkipOption('yes'); localStorage.setItem('voteToSkipOption', 'yes'); }}>
+                        <button className={styles.card} onClick={() => setVoteToSkipOption('yes')}>
                             <div className={styles.icon}>✅</div>
                             <div className={styles.title}>Vote to skip</div>
                             <div className={styles.description}>Zezwól innym użytkownikom na głosowanie aby pomijać utwory.</div>
                         </button>
-                        <button className={styles.card} onClick={() => { setVoteToSkipOption('no'); localStorage.setItem('voteToSkipOption', 'no'); }}>
+                        <button className={styles.card} onClick={() => setVoteToSkipOption('no')}>
                             <div className={styles.icon}>❌</div>
                             <div className={styles.title}>Brak głosowania</div>
                             <div className={styles.description}>Nie zezwalaj innym użytkownikom na głosowanie nad pomijaniem utworów.</div>
@@ -200,19 +200,17 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
                         <button className={styles.card} onClick={() => { 
                                 setVoteToSkipOption('specifiedPercentage');
                                 setSpecifiedPercentage(50);
-                                localStorage.setItem('voteToSkipOption', 'specifiedPercentage');
-                                localStorage.setItem('specifiedPercentage', 50); 
                             }}>
                             <div className={styles.icon}>👥</div>
                             <div className={styles.title}>Więcej niż połowa</div>
                             <div className={styles.description}>Utwór zostanie pominięty jeśli więcej niż połowa użytkowników zagłosuje za pominięciem.</div>
                         </button>
-                        <button className={styles.card} onClick={() => { setVoteToSkipOption('specifiedPercentage'); localStorage.setItem('voteToSkipOption', 'specifiedPercentage'); }}>
+                        <button className={styles.card} onClick={() => setVoteToSkipOption('specifiedPercentage')}>
                             <div className={styles.icon}>📊</div>
                             <div className={styles.title}>Określony procent</div>
                             <div className={styles.description}>Utwór zostanie pominięty jeśli określony procent użytkowników zagłosuje za pominięciem.</div>
                         </button>
-                        <button className={styles.card} onClick={() => { setVoteToSkipOption('specifiedNumber'); localStorage.setItem('voteToSkipOption', 'specifiedNumber'); }}>
+                        <button className={styles.card} onClick={() => setVoteToSkipOption('specifiedNumber')}>
                             <div className={styles.icon}>🔢</div>
                             <div className={styles.title}>Określona liczba</div>
                             <div className={styles.description}>Utwór zostanie pominięty, gdy zagłosują określona liczba użytkowników.</div>
@@ -233,7 +231,7 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
                             step={1}
                             unit="%"
                             initialValue={50}
-                            onConfirm={(value) => { setSpecifiedPercentage(value); localStorage.setItem('specifiedPercentage', value); }}
+                            onConfirm={(value) => setSpecifiedPercentage(value)}
                         />
                     </div>
                 </div>
@@ -250,7 +248,7 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
                             step={1}
                             unit=""
                             initialValue={50}
-                            onConfirm={(value) => { setSpecifiedNumber(value); localStorage.setItem('specifiedNumber', value); }}
+                            onConfirm={(value) => setSpecifiedNumber(value)}
                         />
                     </div>
                 </div>
@@ -284,7 +282,7 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
                             <div className={styles.title}>Zaloguj się</div>
                             <div className={styles.description}>Zaloguj się na swoje konto Spotify aby uzyskać dostęp do swoich playlist.</div>
                         </button>
-                        <button className={styles.card} onClick={() => { setIsGuest(true); localStorage.setItem('isGuest', 'true'); }}>
+                        <button className={styles.card} onClick={() => setIsGuest(true)}>
                             <div className={styles.icon}>♙</div>
                             <div className={styles.title}>Gość</div>
                             <div className={styles.description}>Kontynuuj jako gość bez logowania się na konto Spotify.</div>
