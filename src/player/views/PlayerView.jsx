@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './PlayerView.module.css';
 import { useAuth } from '../../global/contexts/AuthContext';
 import { usePlayer } from '../contexts/PlayerContext';
+import { usePlayerPlaybackData } from '../contexts/PlayerPlaybackContext';
 import { useParty } from '../../global/contexts/PartyContext';
 import image from '../../assets/Wlaz_Normal.png';
 import Navbar from '../../global/components/Navbar/Navbar';
@@ -9,20 +10,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const PlayerView = () => {
   const { loadingAuth } = useAuth();
-  const { currentTrack, progressMs, progressPercent } = usePlayer();
+  const { currentTrack } = usePlayer();
+  const { progressMs, progressPercent } = usePlayerPlaybackData();
   const { partyId, joinPassword } = useParty();
 
   const [joinPanelVisible, setJoinPanelVisible] = useState(false);
 
   const formatTime = (ms) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(0);
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
-
-  if (loadingAuth) {
-    return <h2>Loading...</h2>;
-  }
 
   return (
     <div className={styles.playerViewContainer}>
@@ -96,27 +95,35 @@ const PlayerView = () => {
       {/* MAIN PLAYER */}
       <div className={styles.centralPlayer}>
         
-        <img 
-          src={currentTrack.albumCover} 
-          alt="Album Cover" 
-          className={styles.albumCover} 
-        />
+        {currentTrack ? (<>
+          <img 
+            src={currentTrack.albumCover || null} 
+            alt="Album Cover" 
+            className={styles.albumCover} 
+          />
 
-        <div className={styles.trackInfo}>
-          <h1 className={styles.trackTitle}>{currentTrack.title}</h1>
-          <h2 className={styles.trackArtist}>{currentTrack.artist}</h2>
-        </div>
-
-        <div className={styles.playbackBar}>
-          <span className={styles.timeLabel}>{formatTime(progressMs)}</span>
-          <div className={styles.progressBarBg}>
-            <div 
-              className={styles.progressBarFill} 
-              style={{ width: `${progressPercent}%` }}
-            ></div>
+          <div className={styles.trackInfo}>
+            <h1 className={styles.trackTitle}>{currentTrack.title}</h1>
+            <h2 className={styles.trackArtist}>
+              {currentTrack.artists.map(artist => artist.name).join(", ")}
+            </h2>
           </div>
-          <span className={styles.timeLabel}>{formatTime(currentTrack.durationMs)}</span>
-        </div>
+
+          <div className={styles.playbackBar}>
+            <span className={styles.timeLabel}>{formatTime(progressMs)}</span>
+            <div className={styles.progressBarBg}>
+              <div 
+                className={styles.progressBarFill} 
+                style={{ width: `${progressPercent}%` }}
+              ></div>
+            </div>
+            <span className={styles.timeLabel}>{formatTime(currentTrack.durationMs)}</span>
+          </div>
+        </>) : (
+          <div className={styles.noTrack}>
+            <p>Brak odtwarzanego utworu</p>
+          </div>
+        )}
 
       </div>
 

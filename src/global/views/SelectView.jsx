@@ -4,7 +4,7 @@ import Slider from '../components/Slider/Slider';
 import { useAuth } from '../contexts/AuthContext';
 import { useParty } from '../contexts/PartyContext';
 
-const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
+const SelectView = ({ setNavbarTabs, setIsPlayer, setCurrentView }) => {
 
     const { spotifyAuthorized, login, loginAsGuest } = useAuth();
     const { createPartySession, joinPartySession, createPartySessionAndJoin, partyId } = useParty();
@@ -58,6 +58,8 @@ const SelectView = ({ setNavbarTabs, setIsPlayer }) => {
                 joinPartySession(enteredPartyId);
             }
         }
+
+        setCurrentView(selectedView);
     }
     const handleNicknameSubmit = () => {
         if (nickname.trim().length < 3) {

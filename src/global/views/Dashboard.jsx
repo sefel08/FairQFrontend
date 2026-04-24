@@ -8,10 +8,10 @@ import UserView from '../../user/views/UserView';
 import PartyView from '../../user/views/PartyView';
 import { UserProvider } from '../../user/contexts/UserContext';
 import { PlayerProvider } from '../../player/contexts/PlayerContext';
+import { PlayerPlaybackProvider } from '../../player/contexts/PlayerPlaybackContext';
 import { PartyProvider } from '../contexts/PartyContext';
 import Navbar from '../components/Navbar/Navbar';
 import SpotifySDKContainer from '../../player/components/SpotifySDKContainer';
-import { tr } from 'framer-motion/client';
 
 const Dashboard = () => {
   
@@ -51,7 +51,7 @@ const Dashboard = () => {
   }
 
   if (!authorized || !partyId) {
-    return <SelectView setNavbarTabs={handleTabsChange} setIsPlayer={handleSetIsPlayer}/>;
+    return <SelectView setNavbarTabs={handleTabsChange} setIsPlayer={handleSetIsPlayer} setCurrentView={handleViewChange} />;
   }
 
   // Make sure user clicks something to disable auto-play block in browsers
@@ -67,23 +67,25 @@ const Dashboard = () => {
     <div className={styles.dashboard}>
 
       <UserProvider>
+        <PlayerProvider isPlayer={isPlayer}>
+          <PlayerPlaybackProvider isPlayer={isPlayer}>
 
-        {
-          isPlayer && <SpotifySDKContainer />
-        }
+            {
+              isPlayer && <SpotifySDKContainer />
+            }
 
-        {currentView === 'player' ? (
-          <PlayerProvider>
-            <PlayerView />
-          </PlayerProvider>
-        ) : currentView === 'user' ? (
-          <UserView goBackToViewSelection={resetView} />
-        ) : currentView === 'party' ? (
-          <PartyView />
-        ) : (
-          <p>Something went wrong</p>
-        )}
+            {currentView === 'player' ? (
+              <PlayerView />
+            ) : currentView === 'user' ? (
+              <UserView goBackToViewSelection={resetView} />
+            ) : currentView === 'party' ? (
+              <PartyView />
+            ) : (
+              <p>Something went wrong</p>
+            )}
 
+          </PlayerPlaybackProvider>
+        </PlayerProvider>
       </UserProvider>
       
       {navbarTabs.length > 0 &&
