@@ -78,7 +78,11 @@ const SpotifySDKContainer = () => {
 
         p.connect();
     };
-
+    const handleCleanup = () => {
+        if (!currentDeviceId.current) return;
+        const url = `${API_BASE_URL}/api/player/cleanup${`?deviceId=${currentDeviceId.current}`}`;
+        navigator.sendBeacon(url, null);
+    };
     const handleSongEndedOnBackend = async () => {
         console.log("Requesting next track from backend...");
         fetch(`${API_BASE_URL}/api/player/playNext`, {
@@ -111,6 +115,8 @@ const SpotifySDKContainer = () => {
                 document.body.appendChild(script);
             }
         }
+
+        window.addEventListener('beforeunload', handleCleanup);
 
         return () => {
             if (playerInstance.current) {
