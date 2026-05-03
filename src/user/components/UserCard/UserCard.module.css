@@ -11,6 +11,12 @@
 }
 
 .authorized {
+    background: linear-gradient(
+        135deg, 
+        #282828 0%, 
+        var(--spotify-player) 40%, 
+        #121212 100%
+    );
     border-bottom: 3px solid var(--spotify-green);
 }
 

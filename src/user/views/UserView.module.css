@@ -129,6 +129,28 @@
 .skipButton.active .skipIcon {
     fill: #000;
 }
+.skipCount {
+    position: absolute;
+    left: 70%;
+    top: 0%;
+    font-weight: 600;
+    font-size: 0.8rem;
+    font-family: 'Trebuchet MS';
+    text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+    color: var(--spotify-white);
+}
+.skipCount.active {
+    color: var(--spotify-green);
+    text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
 
 
 

@@ -10,12 +10,15 @@ import Queuebar from '../../global/components/Queuebar/Queuebar';
 import styles from './UserView.module.css';
 
 import SkipIcon from '../../assets/skip_icon.svg?react';
+import { usePartySelector } from '../../global/components/usePartySelector';
 
 const UserView = ({ goBackToViewSelection }) => {
     
     const { user, authorized, login } = useAuth();
     const { queue, refreshUserQueue } = useUser();
-    const { voteToSkip, cancelSkipVote, votedToSkip } = useParty();
+    
+    const { votedToSkip, isVotePending, handleSkip } = useParty();
+    const skipVotes = usePartySelector(state => state.skipVotes);
 
     const [currentSubView, setCurrentSubView] = useState('home');
     const [lastView, setLastView] = useState('home');
@@ -27,14 +30,6 @@ const UserView = ({ goBackToViewSelection }) => {
 
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isQueueOpen, setQueueOpen] = useState(false);
-
-    const handleSkip = () => {
-        if (!votedToSkip) {
-            voteToSkip();
-        } else {
-            cancelSkipVote();
-        }
-    };
 
     useEffect(() => {
         refreshUserQueue();
@@ -55,7 +50,10 @@ const UserView = ({ goBackToViewSelection }) => {
             <main className={styles.mainContent}>
                 <MainBox userName={user.name} currentView={currentSubView} lastView={lastView} setView={handleViewChange} />
                 <button className={styles.showQueueBtn} onClick={() => setQueueOpen(true)}>Pokaż kolejkę</button>
-                <button className={`${styles.skipButton} ${votedToSkip ? styles.active : ''}`} onClick={handleSkip}>
+                <button className={`${styles.skipButton} ${votedToSkip ? styles.active : ''}`} onClick={handleSkip} disabled={isVotePending}>
+                    <span className={`${styles.skipCount} ${votedToSkip ? styles.active : ''}`}>
+                        {skipVotes !== 0 ? skipVotes : ''}
+                    </span>
                     <SkipIcon alt="Skip" className={styles.skipIcon} />
                 </button>
             </main>

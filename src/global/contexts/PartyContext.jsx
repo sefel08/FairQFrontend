@@ -18,12 +18,14 @@ export const PartyProvider = ({ children }) => {
     const [isHost, setIsHost] = useState(false);
 
     const [votedToSkip, setVotedToSkip] = useState(false);
+    const [isVotePending, setIsVotePending] = useState(false);
 
     useEffect(() => {
         if (loadingAuth) return;
         updateStatus();
     }, [loadingAuth]);
 
+    // WebSocket connection for real-time updates
     useEffect(() => {
         if (!partyId) return;
 
@@ -39,14 +41,24 @@ export const PartyProvider = ({ children }) => {
             console.log('Connected to Party WebSocket');
 
             client.subscribe(`/party/${partyId}`, (message) => {
-                const event = JSON.parse(message.body);
+                const messageData = JSON.parse(message.body);
                 
-                switch (event) {
+                switch (messageData.type) {
                     case 'PARTY_QUEUE_CHANGED':
                         partyStore.notify('partyQueue');
                         break;
                     case 'PARTY_USERS_CHANGED':
                         partyStore.notify('partyUsers');
+                        break;
+                    case 'SKIP_VOTES_CHANGED':
+                        const skipVotes = messageData.payload;
+                        partyStore.notify('skipVotes', skipVotes);
+                        if (skipVotes === 0) {
+                            setVotedToSkip(prev => { 
+                                if (prev === false) return prev;
+                                return false 
+                            });
+                        }
                         break;
                 }
             });
@@ -71,19 +83,18 @@ export const PartyProvider = ({ children }) => {
         fetch(`${API_BASE_URL}/api/party/status`, {
             method: 'GET',
             credentials: 'include',
-            redirect: 'manual'
         }).then( (res) => {
-            if (res.ok) return res.json();
+            if (!res.ok) console.log("Cannot fetch party status. Log in to refresh.");
+            else return res.json();
         }).then( (data) => {
             if (!data) return;
             if (data.inParty) {
                 setPartyId(data.partyId);
                 setIsHost(data.isHost);
             }
-        }).finally(() => setLoadingParty(false)
-        ).catch( err => {
+        }).catch( err => {
             console.error("Failed to fetch party status:", err);
-        });
+        }).finally(() => setLoadingParty(false));
     };
 
     const createPartySessionAndJoin = (partySettings) => {
@@ -149,36 +160,66 @@ export const PartyProvider = ({ children }) => {
         });
     }
     const voteToSkip = () => {
-        fetch(`${API_BASE_URL}/api/party/skip`, {
+        return fetch(`${API_BASE_URL}/api/party/skip`, {
             method: 'POST',
             credentials: 'include'
         }).then( (res) => {
             if (!res.ok) throw new Error("Failed to vote to skip");
             return res.json();
-        }).then( (data) => {
-            if (data === true)
-                setVotedToSkip(true);
-        }).catch( err => {
-            console.error("Failed to vote to skip, error occurred:", err);
-        });
+        })
     };
     const cancelSkipVote = () => {
-        fetch(`${API_BASE_URL}/api/party/skip`, {
+        return fetch(`${API_BASE_URL}/api/party/skip`, {
             method: 'DELETE',
             credentials: 'include'
         }).then( (res) => {
             if (!res.ok) throw new Error("Failed to cancel skip vote");
             return res.json();
-        }).then((data) => {
-            if (data === true)
-                setVotedToSkip(false);
-        }).catch( err => {
-            console.error("Failed to cancel skip vote, error occurred:", err);
-        });
+        })
+    };
+        
+    const handleSkip = async () => {
+        if (isVotePending) return;
+
+        const previousVoteState = votedToSkip;
+        
+        // Optimistyic UI update
+        setVotedToSkip(!previousVoteState);
+        setIsVotePending(true);
+
+        try {
+            let result;
+            if (previousVoteState) {
+                result = await cancelSkipVote();
+            } else {
+                result = await voteToSkip();
+            }
+
+            switch (result) {
+                case 1:
+                    // successfully voted to skip
+                    break;
+                case -1:
+                    // successfully skipped current track
+                    setVotedToSkip(false);
+                    break;
+                case 0:
+                default:
+                    // something went wrong, revert the optimistic update
+                    setVotedToSkip(previousVoteState);
+                    break;
+            }
+        } catch (error) {
+            // On error, revert the optimistic update and log the error
+            console.error("Critical error while voting:", error);
+            setVotedToSkip(previousVoteState);
+        } finally {
+            setIsVotePending(false);
+        }
     };
 
     return (
-        <PartyContext.Provider value={{ loadingParty, partyId, joinPartySession, createPartySessionAndJoin, getPartyQueue, getPartyUsers, voteToSkip, cancelSkipVote, votedToSkip }}>
+        <PartyContext.Provider value={{ loadingParty, partyId, joinPartySession, createPartySessionAndJoin, getPartyQueue, getPartyUsers, votedToSkip, isVotePending, handleSkip }}>
             {children}
         </PartyContext.Provider>
     );

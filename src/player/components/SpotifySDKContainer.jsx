@@ -97,6 +97,7 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
             keepalive: true,
         });
     };
+    // TODO fix this
     const handleVisibilityChange = () => {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         

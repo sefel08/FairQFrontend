@@ -57,7 +57,7 @@ const Dashboard = () => {
   // Make sure user clicks something to disable auto-play block in browsers
   if (!clickedSomething && isPlayer) {
     return (
-      <div style={{ width: '100%', height: '100%', fontSize: '4rem' }} onClick={() => setClickedSomething(true)}>
+      <div style={{ width: '100%', height: '100%', fontSize: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setClickedSomething(true)}>
         Kliknij w ekran, aby uruchomić odtwarzacz Spotify
       </div>
     );
