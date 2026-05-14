@@ -13,6 +13,10 @@ import { PartyProvider } from '../contexts/PartyContext';
 import Navbar from '../components/Navbar/Navbar';
 import SpotifySDKContainer from '../../player/components/SpotifySDKContainer';
 
+import restartIcon from '../../assets/restart_icon.svg';
+
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL
+
 const Dashboard = () => {
   
   const { authorized, loadingAuth, userRole } = useAuth();
@@ -23,6 +27,8 @@ const Dashboard = () => {
   const [currentView, setCurrentView] = useState(null);
   const [viewResetTrigger, setViewResetTrigger] = useState(0);
   const [mustRejoinParty, setMustRejoinParty] = useState(false);
+
+  const [selectViewRestartTrigger, setSelectViewRestartTrigger] = useState(0);
 
   const hasMoreThanOneRole = useRef(false);
 
@@ -58,14 +64,13 @@ const Dashboard = () => {
     }
   }
 
-  // TODO change redirect url to env variable
   // login error handling
   if (new URLSearchParams(window.location.search).get('loginError')) {
     return (
       <div className={styles.errorPage}>
         <h1>Błąd logowania</h1>
         <p>Nie udało się zalogować do Spotify. Upewnij się, że masz aktywne połączenie z internetem i spróbuj ponownie.</p>
-        <button onClick={() => window.location.href = 'http://127.0.0.1:5173'}>Spróbuj ponownie</button>
+        <button onClick={() => window.location.href = VITE_FRONTEND_URL}>Spróbuj ponownie</button>
       </div>
     );
   }
@@ -75,7 +80,19 @@ const Dashboard = () => {
   }
 
   if ((!authorized || !partyId) || mustRejoinParty) {
-    return <SelectView />;
+    return (
+     <>
+      <button className={styles.selectViewRestartButton}
+        onClick={() => {
+          localStorage.removeItem('operation');
+          setSelectViewRestartTrigger(prev => prev + 1);
+        }}
+      >
+        <img src={restartIcon} alt="Restart" className={styles.selectViewRestartButtonicon}/>
+      </button>
+      <SelectView key={selectViewRestartTrigger} />
+     </>
+    );
   }
 
   // Make sure user clicks something to disable auto-play block in browsers

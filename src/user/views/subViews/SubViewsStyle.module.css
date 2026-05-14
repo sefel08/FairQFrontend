@@ -79,10 +79,13 @@
     margin-top: calc(4rem - 2dvh);
 }
 .playlistImage {
-    width: 40%;
-    object-fit: cover;
+    width: 128px;
+    height: 128px;
     aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center center;
     flex-shrink: 0;
+    background: transparent;
     border-radius: 4px;
 }
 .playlistInfo {
@@ -99,7 +102,7 @@
     font-weight: 600;
 }
 .playlistName {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     line-height: 1;
     margin: 0.6rem 0;

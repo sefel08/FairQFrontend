@@ -67,7 +67,7 @@ export const PartyProvider = ({ children }) => {
                 switch (messageData.type) {
                     case 'REFRESH_STATUS':
                         console.log('Received REFRESH_STATUS message, refreshing auth status');
-                        refreshStatus();
+                        window.location.reload();
                         break;
                 }
             });

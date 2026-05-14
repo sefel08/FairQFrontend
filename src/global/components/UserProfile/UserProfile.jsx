@@ -9,8 +9,8 @@ const UserProfile = () => {
 
     return (
         <div 
-        className={`${styles.profileCard} ${!spotifyAuthorized ? styles.loginPointer : ''}`} 
-        onClick={!spotifyAuthorized ? login : undefined}
+            className={`${styles.profileCard} ${!spotifyAuthorized ? styles.loginPointer : ''}`} 
+            onClick={!spotifyAuthorized ? login : undefined}
         >
         {spotifyAuthorized && user ? (
             <>

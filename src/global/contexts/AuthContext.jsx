@@ -2,6 +2,7 @@ import { small } from 'framer-motion/client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
 export const AuthContext = createContext();
     
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }) => {
     };
     const login = (asPlayer = false) => {
         const currentUrl = window.location.href;
-        const isNonStandard = currentUrl !== 'http://127.0.0.1:5173/';
+        const isNonStandard = currentUrl !== FRONTEND_URL && currentUrl !== `${FRONTEND_URL}/`;
         if (isNonStandard) {
             localStorage.setItem('postLoginRedirect', currentUrl);
         }

@@ -21,4 +21,14 @@ export const PlayerProvider = ({ children, isPlayer }) => {
     );
 };
 
-export const usePlayer = () => useContext(PlayerContext);
+export const usePlayer = () => {
+  const context = useContext(PlayerContext);
+  if (!context) {
+    console.warn('usePlayer must be used within PlayerProvider');
+    return {
+      currentTrack: null,
+      setCurrentTrack: () => {},
+    };
+  }
+  return context;
+};

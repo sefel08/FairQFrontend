@@ -52,3 +52,38 @@
 .errorPage button:hover {
     background-color: var(--spotify-green);
 }
+
+.selectViewRestartButton {
+    position: absolute;
+    z-index: 1000;
+    top: 10px;
+    left: 10px;
+
+    height: 3rem;
+    width: 3rem;
+
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--spotify-green);
+    color: #000;
+
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.selectViewRestartButtonicon {
+    width: 70%;
+    height: 70%;
+}
+@keyframes rotate360 {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.selectViewRestartButton:hover {
+    background-color: var(--spotify-green-hover);
+    animation: rotate360 0.5s ease-out 1;
+}
+
