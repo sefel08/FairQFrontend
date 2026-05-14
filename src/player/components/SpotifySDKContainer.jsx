@@ -60,21 +60,21 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
             // update contexts
             setIsPlaying(!paused);
 
-            // if track changed, update track info in context and reset progress
+            // if track changed, update track info in context
             if (currentTrack.id !== lastTrackId.current) {
-                // update track info in context
                 setCurrentTrack({
                     title: currentTrack.name,
                     artists: currentTrack.artists,
                     albumCover: currentTrack.album.images[0]?.url,
                     durationMs: duration
                 });
-                
                 lastTrackId.current = currentTrack.id;
                 return;
             }
 
-            if (paused && position === 0 && duration > 0 && !isFetchingNext.current) {
+            console.log(`player state: `, state);
+
+            if (paused && position === 0 && !isFetchingNext.current) {
                 console.log("Song ended");
                 isFetchingNext.current = true;
                 await handleSongEndedOnBackend();
@@ -86,9 +86,6 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
 
             // if song wasn't changed, just update progress
             setProgressMs(position);
-        });
-        p.on('playback_error', ({ message }) => {
-            console.error('Failed to perform playback', message);
         });
 
         p.connect();
@@ -145,7 +142,9 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
     };
     const handleSongEndedOnBackend = async () => {
         if (!isPlayerReady.current) return;
+
         console.log("Requesting next track from backend...");
+
         fetch(`${API_BASE_URL}/api/player/playNext`, {
             method: 'POST',
             credentials: 'include',
@@ -202,21 +201,8 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
 
     // remap spotify token to ref to avoid issues with stale closures in player event handlers
     useEffect(() => {
+        console.log("Spotify token updated, refreshing token ref");
         tokenRef.current = spotifyUserToken;
-    }, [spotifyUserToken]);
-    // refresh token
-    useEffect(() => {
-        if (!spotifyUserToken) {
-            refreshSpotifyToken();
-            return;
-        }
-
-        const REFRESH_INTERVAL = 45 * 60 * 1000; // 45 minutes
-        const refreshTimer = setTimeout(() => {
-            refreshSpotifyToken();
-        }, REFRESH_INTERVAL);
-
-        return () => clearTimeout(refreshTimer);
     }, [spotifyUserToken]);
 
     return null;

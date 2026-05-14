@@ -1,7 +1,9 @@
 import React from 'react';
 import styles from './UserProfile.module.css';
-import default_avatar_image from '../../../assets/spotify_icon.png';
 import { useAuth } from '../../contexts/AuthContext';
+
+import default_avatar_image from '../../../assets/spotify_icon.png';
+import default_avatar_image_loggedIn from '../../../assets/spotify_icon_green.png';
 
 const UserProfile = () => { 
     
@@ -9,12 +11,16 @@ const UserProfile = () => {
 
     return (
         <div 
-        className={`${styles.profileCard} ${!spotifyAuthorized ? styles.loginPointer : ''}`} 
-        onClick={!spotifyAuthorized ? login : undefined}
+            className={`${styles.profileCard} ${!spotifyAuthorized ? styles.notLoggedIn : ''}`} 
+            onClick={!spotifyAuthorized ? login : undefined}
         >
         {spotifyAuthorized && user ? (
             <>
-            <img className={styles.avatar} src={(user.imageUrl === 'None') ? default_avatar_image : user.imageUrl} alt={user.displayName} />
+            <img 
+                className={styles.avatar} 
+                src={(!user.imageUrl) ? (spotifyAuthorized) ? default_avatar_image_loggedIn : default_avatar_image : user.imageUrl} 
+                alt={user.displayName}
+            />
             <span className={styles.username}>{user.displayName}</span>
             </>
         ) : (

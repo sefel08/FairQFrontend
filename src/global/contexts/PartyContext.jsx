@@ -9,7 +9,7 @@ export const PartyContext = createContext();
 
 export const PartyProvider = ({ children }) => {
     
-    const { user, loadingAuth, refreshStatus } = useAuth();
+    const { user, loadingAuth, refreshStatus, refreshSpotifyToken } = useAuth();
 
     const [loadingParty, setLoadingParty] = useState(true);
 
@@ -67,7 +67,11 @@ export const PartyProvider = ({ children }) => {
                 switch (messageData.type) {
                     case 'REFRESH_STATUS':
                         console.log('Received REFRESH_STATUS message, refreshing auth status');
-                        refreshStatus();
+                        window.location.reload();
+                        break;
+                    case 'REFRESH_TOKEN':
+                        console.log('Received REFRESH_TOKEN message, refreshing spotify token');
+                        refreshSpotifyToken();
                         break;
                 }
             });

@@ -1,7 +1,7 @@
-import { small } from 'framer-motion/client';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
 export const AuthContext = createContext();
     
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     };
     const login = (asPlayer = false) => {
         const currentUrl = window.location.href;
-        const isNonStandard = currentUrl !== 'http://127.0.0.1:5173/';
+        const isNonStandard = currentUrl !== FRONTEND_URL && currentUrl !== `${FRONTEND_URL}/`;
         if (isNonStandard) {
             localStorage.setItem('postLoginRedirect', currentUrl);
         }
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
         );
     };
 
-    const refreshSpotifyToken = async () => {
+    const refreshSpotifyToken = useCallback(async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/spotify-token`, { credentials: 'include' });
             const data = await res.json();
@@ -94,18 +94,25 @@ export const AuthProvider = ({ children }) => {
                     setSpotifyAuth(false);
                     setSpotifyUserToken(null);
                 }
+            } else {
+                console.log(`Spotify token received.`);
+                setSpotifyUserToken(newToken);
             }
-
-            setSpotifyUserToken(newToken);
 
         } catch (err) {
             console.error("Error refreshing Spotify token:", err);
         }
-    };
+    }, []);
 
     useEffect(() => {
         refreshStatus();
     }, []);
+
+    useEffect(() => {
+        if (userRole.isPlayer && spotifyAuthorized && !spotifyUserToken) {
+            refreshSpotifyToken();
+        }
+    }, [userRole.isPlayer, spotifyAuthorized, refreshSpotifyToken]);
 
     return (
         <AuthContext.Provider value={{ authorized, spotifyAuthorized, loadingAuth, user, login, refreshStatus, loginAsGuest, spotifyUserToken, isPremium, hasHostPermissions, refreshSpotifyToken, userRole }}>

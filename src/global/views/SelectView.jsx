@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import styles from './SelectView.module.css';
 
 import { useAuth } from '../contexts/AuthContext';
@@ -8,7 +8,8 @@ import SelectOptionGroup from './SelectSubViews/SelectOptionGroup';
 import SelectInputOption from './SelectSubViews/SelectInputOption';
 import SelectSliderOption from './SelectSubViews/SelectSliderOption';
 import SelectCheckboxOption from './SelectSubViews/SelectCheckboxOption';
-import { tr } from 'framer-motion/client';
+
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL
 
 const SelectView = () => {
 
@@ -16,10 +17,18 @@ const SelectView = () => {
     const { createPartySession, joinPartySession, createPartySessionAndJoin, joinOwnPartySession } = useParty();
 
     const [processing, setProcessing] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     // global states
     const [acceptedCookies, setAcceptedCookies] = useState(() => localStorage.getItem('acceptedCookies') === 'true' );
-    const [operation, setOperation] = useState(null);
+    const [operation, setOperation] = useState(() => {
+        const oldOperation = localStorage.getItem('operation');
+        if (oldOperation) {
+            localStorage.removeItem('operation');
+            return oldOperation;
+        }
+        return null;
+    });
     const [joinAs, setJoinAs] = useState(null) // user / player / host
     
     // create states
@@ -43,16 +52,17 @@ const SelectView = () => {
             setJoinAs(['user']);
             setAutoJoinTry(1);
         }
+        setLoading(false);
     }, []);
     //auto join
     useEffect(() => {
         if ((operation === 'join' && enteredPartyId && joinAs.length !== 0 && (spotifyAuthorized || (isGuest && nickname.length > 3))) && autoJoinTry === 1) {
             setAutoJoinTry(2);
-            handleParty();
+            handleParty(operation, joinAs, enteredPartyId);
         }
     }, [operation, joinAs, enteredPartyId, nickname, spotifyAuthorized]);
 
-    const handleParty = async () => {
+    const handleParty = async (operation, joinAs, partyId = null, voteToSkipOption = null) => {
         if (!acceptedCookies) {
             alert("Musisz zaakceptować pliki cookie, aby korzystać z tej aplikacji.");
             return;
@@ -60,6 +70,7 @@ const SelectView = () => {
 
         if (processing) return;
         setProcessing(true);
+        setLoading(true);
 
         const isUser = joinAs.includes('user');
         const isPlayer = joinAs.includes('player');
@@ -108,16 +119,23 @@ const SelectView = () => {
             await createPartySessionAndJoin(partySettings, isUser, isPlayer, isHost);
         
         } else if (operation === 'join') {
-            localStorage.setItem('enteredPartyId', enteredPartyId);
+            if (!partyId) {
+                console.warn("Didn't provide a party ID to join operation.");
+                // this should never happen, but if it does, we can just reset the view and let user try again
+                window.location.href = FRONTEND_URL;
+                return;
+            }
+            localStorage.setItem('enteredPartyId', partyId);
             if (isGuest) {
                 await loginAsGuest(nickname);
             }
-            await joinPartySession(enteredPartyId, isUser, isPlayer, isHost);
+            await joinPartySession(partyId, isUser, isPlayer, isHost);
         } else if (operation === 'joinOwn') {
             await joinOwnPartySession(isUser, isPlayer, isHost);
         }
 
         setProcessing(false);
+        setLoading(false);
     }
 
     // cookie consent
@@ -136,6 +154,14 @@ const SelectView = () => {
                 }
             }} 
         />);
+    }
+
+    if (loading) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.loading}>Ładowanie...</div>
+            </div>
+        );
     }
 
     // operation select
@@ -167,6 +193,7 @@ const SelectView = () => {
                 ]}
                 onSelect={(id) => {
                     if (id === 'login') {
+                        localStorage.setItem('operation', operation);
                         login();
                     } else if (id === 'guest') {
                         setIsGuest(true);
@@ -200,7 +227,7 @@ const SelectView = () => {
                     placeholder="Wpisz kod pokoju..."
                     submitLabel='Dołącz do imprezy'
                     onSubmit={(value) => {
-                        setEnteredPartyId(value);
+                        handleParty(operation, joinAs, value);
                     }}
                 />
             );
@@ -216,6 +243,7 @@ const SelectView = () => {
                     ]}
                     onSelect={(id) => {
                         if (id === 'login') {
+                            localStorage.setItem('operation', operation);
                             login(true);
                         }
                     }}
@@ -231,7 +259,7 @@ const SelectView = () => {
                         <div className={styles.title}>Wymagane konto Premium</div>
                         <div className={styles.description}>Musisz posiadać konto Spotify Premium, aby stworzyć pokój i odtwarzać muzykę.</div>
                         <button className={styles.primaryButton} onClick={() => login(true)}>Zaloguj się z innym kontem</button>
-                        <button className={styles.secondaryButton} onClick={() => window.location.reload()}>Powrót</button>
+                        <button className={styles.primaryButton} onClick={() => window.location.href = FRONTEND_URL}>Powrót</button>
                     </div>
                 </div>
             );
@@ -357,7 +385,7 @@ const SelectView = () => {
                     <div className={styles.icon}>✅</div>
                     <div className={styles.title}>Wszystko gotowe!</div>
                     <div className={styles.description}>Kliknij poniższy przycisk, aby stworzyć pokój i rozpocząć imprezę!</div>
-                    <button className={styles.primaryButton} onClick={handleParty} disabled={processing}>Stwórz pokój</button>
+                    <button className={styles.primaryButton} onClick={() => handleParty(operation, joinAs, null, voteToSkipOption)} disabled={processing}>Stwórz pokój</button>
                 </div>
             </div>
         );
@@ -372,6 +400,7 @@ const SelectView = () => {
                     ]}
                     onSelect={(id) => {
                         if (id === 'login') {
+                            localStorage.setItem('operation', operation);
                             login(true);
                         }
                     }}
@@ -404,19 +433,18 @@ const SelectView = () => {
                     <div className={styles.icon}>✅</div>
                     <div className={styles.title}>Wszystko gotowe!</div>
                     <div className={styles.description}>Kliknij poniższy przycisk, aby dołączyć do swojego pokoju z tego urządzenia.</div>
-                    <button className={styles.primaryButton} onClick={handleParty} disabled={processing}>Dołącz do pokoju</button>
+                    <button className={styles.primaryButton} onClick={() => handleParty(operation, joinAs)} disabled={processing}>Dołącz do pokoju</button>
                 </div>
             </div>
         );
 
     }
 
-    
+
     // error fallback
     return (
         <div className={styles.container}>
-            <h1>Something went wrong</h1>
-            <p>Spróbuj odświeżyć stronę.</p>
+            <h1>Something went wrong<br/>Spróbuj odświeżyć stronę.</h1>
         </div>
     )
 };

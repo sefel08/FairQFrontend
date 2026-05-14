@@ -59,7 +59,7 @@ const PlayerView = ({ rounded }) => {
         </div>
 
         <div className={styles.playbackBar}>
-          <span className={styles.timeLabel}>{formatTime(progressMs)}</span>
+          <span className={styles.timeLabel}>{formatTime(currentTrack ? (progressMs <= currentTrack.durationMs ? progressMs : currentTrack.durationMs) : 0)}</span>
           <div className={styles.progressBarBg}>
             <div 
               className={styles.progressBarFill} 
