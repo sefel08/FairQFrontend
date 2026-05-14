@@ -154,6 +154,50 @@ export const PartyProvider = ({ children }) => {
         })
         .catch( err => console.error("Failed to join party session:", err) );
     };
+    const joinOwnPartySession = (asUser, asPlayer, asHost) => {
+        fetch(`${API_BASE_URL}/api/party/joinOwn`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ asParticipant: !!asUser, asPlayer: !!asPlayer, asHost: !!asHost })
+        })
+        .then( (res) => {
+            if (!res.ok) throw new Error("Failed to join own party session");
+            return res.json();
+        }).then( (data) => {
+            if (data.success) {
+                return;
+            } else {
+                alert(data.message);
+            }
+        }).then( () => {
+            updateStatus();
+            refreshStatus();
+        })
+        .catch( err => console.error("Failed to join own party session:", err) );
+    };
+    const leavePartySession = () => {
+        fetch(`${API_BASE_URL}/api/party/leave`, {
+            method: 'POST',
+            credentials: 'include'
+        })
+        .then( (res) => {
+            if (!res.ok) throw new Error("Failed to leave party session");
+            return res.json();
+        }).then( (data) => {
+            if (data.success) {
+                return;
+            } else {
+                alert(data.message);
+            }
+        }).then( () => {
+            updateStatus();
+            refreshStatus();
+        })
+        .catch( err => console.error("Failed to leave party session:", err) );
+    };
 
     const getPartyQueue = () => {
         return fetch(`${API_BASE_URL}/api/party/partyQueue`, {
@@ -239,7 +283,7 @@ export const PartyProvider = ({ children }) => {
     };
 
     return (
-        <PartyContext.Provider value={{ loadingParty, partyId, joinPartySession, createPartySessionAndJoin, getPartyQueue, getPartyUsers, votedToSkip, handleSkip }}>
+        <PartyContext.Provider value={{ loadingParty, partyId, joinPartySession, createPartySessionAndJoin, getPartyQueue, getPartyUsers, votedToSkip, handleSkip, joinOwnPartySession, leavePartySession }}>
             {children}
         </PartyContext.Provider>
     );

@@ -66,7 +66,7 @@ const UserView = ({ goBackToViewSelection, resetTrigger }) => {
 
             {/* Sidebar wysuwany od boku */}
             <nav className={`${styles.sidebarNav} ${isSidebarOpen ? styles.active : ''}`}>
-                <Sidebar onGoBack={goBackToViewSelection} />
+                <Sidebar />
             </nav>
 
             {/* Queuebar wysuwany od dołu */}

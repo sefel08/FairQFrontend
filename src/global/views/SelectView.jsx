@@ -13,7 +13,7 @@ import { tr } from 'framer-motion/client';
 const SelectView = () => {
 
     const { spotifyAuthorized, hasHostPermissions, isPremium, login, loginAsGuest } = useAuth();
-    const { createPartySession, joinPartySession, createPartySessionAndJoin } = useParty();
+    const { createPartySession, joinPartySession, createPartySessionAndJoin, joinOwnPartySession } = useParty();
 
     const [processing, setProcessing] = useState(false);
 
@@ -50,7 +50,7 @@ const SelectView = () => {
             setAutoJoinTry(2);
             handleParty();
         }
-    }, [operation, joinAs, enteredPartyId, ]);
+    }, [operation, joinAs, enteredPartyId, nickname, spotifyAuthorized]);
 
     const handleParty = async () => {
         if (!acceptedCookies) {
@@ -78,6 +78,16 @@ const SelectView = () => {
                 moreThanThreshold = true;
                 voteThreshold = 0;
             }
+            else if (voteToSkipOption === 'exactlyHalf') {
+                percentVoting = true;
+                moreThanThreshold = false;
+                voteThreshold = 0.5;
+            }
+            else if (voteToSkipOption === 'moreThanHalf') {
+                percentVoting = true;
+                moreThanThreshold = true;
+                voteThreshold = 0.5;
+            }
             else if (voteToSkipOption === 'specifiedPercentage') {
                 percentVoting = true;
                 moreThanThreshold = moreOrEqualOption === 'more';
@@ -92,19 +102,19 @@ const SelectView = () => {
             const partySettings = {
                 voteToSkip,
                 percentVoting,
-                more: moreThanThreshold,
+                moreThanThreshold,
                 voteThreshold,
             };
             await createPartySessionAndJoin(partySettings, isUser, isPlayer, isHost);
         
         } else if (operation === 'join') {
-
             localStorage.setItem('enteredPartyId', enteredPartyId);
             if (isGuest) {
                 await loginAsGuest(nickname);
             }
             await joinPartySession(enteredPartyId, isUser, isPlayer, isHost);
-
+        } else if (operation === 'joinOwn') {
+            await joinOwnPartySession(isUser, isPlayer, isHost);
         }
 
         setProcessing(false);
@@ -135,6 +145,7 @@ const SelectView = () => {
                 options={[
                     { id: 'create', title: 'Utwórz party', description: 'Stwórz nowy pokój i zaproś znajomych.', icon: '🛠️' },
                     { id: 'join', title: 'Dołącz do party', description: 'Dołącz do istniejącego pokoju.', icon: '🎉' },
+                    { id: 'joinOwn', title: 'Dołącz do własnego party', description: 'Dołącz do swojego pokoju, z inną rolą.', icon: '🚀' },
                 ]}
                 onSelect={(id) => {
                     setOperation(id);
@@ -351,6 +362,53 @@ const SelectView = () => {
             </div>
         );
 
+    } else if (operation === 'joinOwn') {
+
+        if (!spotifyAuthorized) {
+            return (
+                <SelectOptionGroup 
+                    options={[
+                        { id: 'login', title: 'Zaloguj się', description: 'Zaloguj się przez Spotify, aby dołączyć do własnego party.', icon: '🔓' },
+                    ]}
+                    onSelect={(id) => {
+                        if (id === 'login') {
+                            login(true);
+                        }
+                    }}
+                />
+            );
+        }
+
+        if (!joinAs) {
+            return (
+                <SelectCheckboxOption
+                    mainTitle="Dołącz jako"
+                    description="Wybierz role, które chcesz pełnić podczas imprezy na tym urządzeniu."
+                    submitLabel='Dalej'
+                    minSelection={1}
+                    options={[
+                        { id: 'user', title: 'Użytkownik', description: 'Dodawanie muzyki do kolejki i głosowanie na utwory.', icon: '👤' },
+                        { id: 'player', title: 'Odtwarzacz', description: 'Odtwarzanie muzyki z tego urządzenia.', icon: '🎵' },
+                        { id: 'host', title: 'Gospodarz', description: 'Zarządzanie użytkownikami i ustawieniami pokoju.', icon: '👑' },
+                    ]}
+                    onSubmit={(id) => {
+                        setJoinAs(id);
+                    }}
+                />
+            );
+        }
+
+        return (
+            <div className={styles.container}>
+                <div className={styles.inputCard}>
+                    <div className={styles.icon}>✅</div>
+                    <div className={styles.title}>Wszystko gotowe!</div>
+                    <div className={styles.description}>Kliknij poniższy przycisk, aby dołączyć do swojego pokoju z tego urządzenia.</div>
+                    <button className={styles.primaryButton} onClick={handleParty} disabled={processing}>Dołącz do pokoju</button>
+                </div>
+            </div>
+        );
+
     }
 
     
@@ -358,6 +416,7 @@ const SelectView = () => {
     return (
         <div className={styles.container}>
             <h1>Something went wrong</h1>
+            <p>Spróbuj odświeżyć stronę.</p>
         </div>
     )
 };

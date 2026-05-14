@@ -10,7 +10,7 @@ const LibraryView = ({ userPlaylists, onPlaylistSelect }) => {
 
     return (authorized ? 
         <div className={styles.container}>
-            <header className={styles.stickyHeader}>
+            <header className={styles.libraryStickyHeader}>
                 <h1 className={styles.header}>Twoja Biblioteka</h1>
                 <div className={styles.filterBar}>
                     <button className={`${styles.chip} ${styles.activeChip}`}>Playlisty</button>
@@ -20,7 +20,7 @@ const LibraryView = ({ userPlaylists, onPlaylistSelect }) => {
             </header>
 
             {/* playlist cards */}
-            <div className={`${styles.list} ${styles.playlistList}`}>
+            <div className={styles.list}>
                 {userPlaylists.map(playlist => (
                     <PlaylistCard key={playlist.id} playlist={playlist} onClick={() => onPlaylistSelect(playlist)} />
                 ))}

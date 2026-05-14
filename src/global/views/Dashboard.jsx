@@ -104,8 +104,10 @@ const Dashboard = () => {
               <UserView goBackToViewSelection={resetView} resetTrigger={viewResetTrigger} />
             ) : currentView === 'party' ? (
               <PartyView />
+            ) : currentView === 'host' ? (
+              <p style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Work in progress</p>
             ) : (
-              <p>Something went wrong</p>
+              <p style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Something went wrong</p>
             )}
 
           </PlayerPlaybackProvider>

@@ -51,7 +51,7 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
             console.log('Spotify Player is ready with device ID:', device_id);
             setupPlayer(device_id);
         });
-        p.addListener('player_state_changed', state => {
+        p.addListener('player_state_changed', async state => {
             if (!state) return;
 
             const currentTrack = state.track_window.current_track;
@@ -77,12 +77,18 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
             if (paused && position === 0 && duration > 0 && !isFetchingNext.current) {
                 console.log("Song ended");
                 isFetchingNext.current = true;
-                handleSongEndedOnBackend();
+                await handleSongEndedOnBackend();
+                setTimeout(() => {
+                    isFetchingNext.current = false;
+                }, 1000);
                 return;
             }
 
             // if song wasn't changed, just update progress
             setProgressMs(position);
+        });
+        p.on('playback_error', ({ message }) => {
+            console.error('Failed to perform playback', message);
         });
 
         p.connect();
@@ -152,10 +158,6 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
         }).then(data => {
             if (!data.played)   
                 setCurrentTrack(null);
-            else
-                setTimeout(() => {
-                    isFetchingNext.current = false;
-                }, 1000);
         }).catch(err => {
             console.error("Error fetching next track:", err);
         });
