@@ -13,6 +13,7 @@ export const PlayerPlaybackProvider = ({ children, isPlayer }) => {
     const { currentTrack } = usePlayer();
     const [isPlaying, setIsPlaying] = useState(false);
     const [progressMs, setProgressMs] = useState(0);
+    const [volume, setVolume] = useState(0.5);
 
     const [joinPassword, setJoinPassword] = useState('1462');
 
@@ -34,11 +35,11 @@ export const PlayerPlaybackProvider = ({ children, isPlayer }) => {
     const progressPercent = currentTrack?.durationMs > 0 ? (progressMs / currentTrack.durationMs) * 100 : 0;
 
 
-    const actions = useMemo(() => ({ setProgressMs, setIsPlaying }), []);
+    const actions = useMemo(() => ({ setIsPlaying, setProgressMs, setVolume }), []);
 
     return (
         <PlayerPlaybackActionsContext.Provider value={actions}>
-            <PlayerPlaybackDataContext.Provider value={{ progressMs, progressPercent, isPlaying, joinPassword }}>
+            <PlayerPlaybackDataContext.Provider value={{ progressMs, progressPercent, isPlaying, joinPassword, volume }}>
                     {children}
             </PlayerPlaybackDataContext.Provider>
         </PlayerPlaybackActionsContext.Provider>

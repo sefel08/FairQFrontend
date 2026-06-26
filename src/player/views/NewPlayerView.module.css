@@ -19,9 +19,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  overflow: hidden;
 }
 .spotifyLogo {
-  width: 120px;
+  width: 180px;
   height: auto;
 }
 .showQRButton {
@@ -31,11 +32,11 @@
   color: var(--spotify-black);
   border-radius: 10px;
 
-  font-size: 1rem;
+  font-size: 1.7rem;
   font-weight: 700;
   font-family: Arial, sans-serif;
 }
-.qrModal {
+.modal {
   position: fixed;
   inset: 0;
   display: flex;
@@ -57,6 +58,7 @@
   font-weight: 600;
   margin: 5px 0 0 0;
   font-family: 'Poppins', sans-serif;
+  z-index: 1001;
 }
 .modalText {
   color: var(--spotify-green);
@@ -68,7 +70,7 @@
 
 /* Middle Section */
 .middleSection {
-  height: 80%;
+  height: 82%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,55 +86,152 @@
 }
 .trackTitle {
   margin: 0;
-  margin-bottom: 10px;
+  margin: 0 10px 10px 10px;
   font-size: 2rem;
   font-weight: 700;
 }
 .trackArtist {
-  margin: 0;
+  margin: 0 10px 0 10px;
   font-size: 1.2rem;
   color: var(--spotify-light-gray);
-}
-/* Progress Bar */
-.progressBar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 90%;
-}
-.timeLabel {
-  font-size: 0.85rem;
-  color: var(--spotify-light-gray);
-  font-family: 'Roboto Mono', monospace;
-}
-.progressBarBg {
-  flex: 1;
-  height: 12px;
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.progressBarFill {
-  height: 100%;
-  background-color: var(--spotify-green);
 }
 
 /* Bottom Section */
 .bottomSection {
-  height: 10%;
+  position: relative;
+  height: 8%;
   display: flex;
-  flex-direction: column;
-  padding: 0 20px;
-  align-items: end;
-  justify-content: center;
+  flex-direction: row;
+  padding: 0 20px 20px 0;
+  align-items: center;
+  justify-content: end;
 }
-.showOptionsButton {
-  width: 54px;
-  height: 54px;
-  padding: 10px;
+.optionsPanel {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding-right: 10px;
+  background-color: var(--spotify-green);
+  transform-origin: right center;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  overflow: hidden;
+}
+.optionsButton {
+  height: 100%;
+  padding: 15px;
   box-sizing: border-box;
-
   background-color: var(--spotify-green);
   color: var(--spotify-black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.optionButtonImg {
+  height: 100%;
+  width: 100%;
+}
+.controlBox {
+  position: absolute;
+  bottom: 110%;
+
+  padding: 10px;
+  background-color: var(--spotify-green);
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.volumeSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  background: var(--spotify-dark-gray);
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+}
+.volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: var(--spotify-dark-gray);
   border-radius: 50%;
+  cursor: pointer;
+}
+.volumeSlider::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: var(--spotify-dark-gray);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.resolutionSelect {
+  width: 100%;
+  padding: 10px 40px 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: sans-serif;
+  color: var(--spotify-light-gray);
+  background-color: var(--spotify-black);
+  
+  border: 1px solid var(--spotify-dark-gray);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.tvQRWrapper {
+  display: none;
+}
+.mobileQRWrapper {
+  display: block;
+}
+
+/* TV view */
+@media (min-width: 1300px) {
+  .mainContainer {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 80% 20%;
+  }
+  .middleSection {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    height: 100%;
+    width: 100%;
+  }
+  .topSection {
+    grid-column: 2;
+    grid-row: 1;
+    height: 100%;
+    width: 100%;
+    background-color: var(--spotify-dark-gray);
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;    
+  }
+  .mobileQRWrapper {
+    display: none;
+  }
+  .tvQRWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+  }
+  .bottomSection {
+    grid-column: 2;
+    grid-row: 2;
+    height: 100%;
+    width: 100%;
+    background-color: var(--spotify-dark-gray);
+  }
 }

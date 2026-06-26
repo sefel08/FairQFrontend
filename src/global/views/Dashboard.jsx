@@ -53,10 +53,6 @@ const Dashboard = () => {
     hasMoreThanOneRole.current = avaibleViews.length > 1;
   }, [loadingAuth]);
 
-  const resetView = () => {
-    setCurrentView(null);
-    localStorage.removeItem('currentView');
-  }
   const handleViewChange = (view) => {
     if (view === currentView) {
       setViewResetTrigger(prev => prev + 1); // trigger reset if same view is selected
@@ -128,7 +124,7 @@ const Dashboard = () => {
               // <PlayerView rounded={hasMoreThanOneRole.current}/>
               <NewPlayerView />
             ) : currentView === 'user' ? (
-              <UserView goBackToViewSelection={resetView} resetTrigger={viewResetTrigger} />
+              <UserView resetTrigger={viewResetTrigger} />
             ) : currentView === 'party' ? (
               <PartyView />
             ) : currentView === 'host' ? (

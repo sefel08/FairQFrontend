@@ -12,7 +12,7 @@ import styles from './UserView.module.css';
 import SkipIcon from '../../assets/skip_icon.svg?react';
 import { usePartySelector } from '../../global/components/usePartySelector';
 
-const UserView = ({ goBackToViewSelection, resetTrigger }) => {
+const UserView = ({ resetTrigger }) => {
     
     const { user, authorized, login } = useAuth();
     const { queue, refreshUserQueue } = useUser();
