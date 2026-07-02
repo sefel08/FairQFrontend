@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, use } from 'react';
 import { useAuth } from '../../global/contexts/AuthContext';
 import { usePlayer } from '../contexts/PlayerContext';
 import { usePlayerPlaybackActions } from '../contexts/PlayerPlaybackContext';
+import { usePlayerPlaybackData } from '../contexts/PlayerPlaybackContext';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -10,7 +11,8 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
     const tokenRef = useRef(spotifyUserToken);
 
     const { setCurrentTrack } = usePlayer();
-    const { setProgressMs, setIsPlaying } = usePlayerPlaybackActions();
+    const { setProgressMs, setIsPlaying, setVolume } = usePlayerPlaybackActions();
+    const { volume } = usePlayerPlaybackData();
 
     const playerInstance = useRef(null);
     const isPlayerReady = useRef(false); // player on backend is ready and can accept playNext requests
@@ -20,6 +22,13 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
     
     const lastTrackId = useRef(null);
     const cleanupMade = useRef(false);
+
+    // set player volume
+    useEffect(() => {
+        if (playerInstance.current) {
+            playerInstance.current.setVolume(volume);
+        }
+    }, [volume]);
 
     // browser player methods
     const createPlayer = () => {
@@ -49,6 +58,7 @@ const SpotifySDKContainer = ({ setClickedSomething }) => {
         p.addListener('ready', ({ device_id }) => {
             currentDeviceId.current = device_id;
             console.log('Spotify Player is ready with device ID:', device_id);
+            p.setVolume(volume);
             setupPlayer(device_id);
         });
         p.addListener('player_state_changed', async state => {

@@ -25,7 +25,7 @@ const HomeView = ({ userName = "Użytkowniku", changeToSearchView, setSearchQuer
             </PlaylistContainer>
 
             <h2 className={styles.subHeader}>Wybrane dla Ciebie</h2>
-            <p style={{color: '#b3b3b3', marginBottom: '1rem'}}>Twoje osobiste zestawienie utworów.</p>
+            <p style={{color: 'var(--spotify-light-gray)', marginBottom: '1rem'}}>Twoje osobiste zestawienie utworów.</p>
         </div>
     );
 };

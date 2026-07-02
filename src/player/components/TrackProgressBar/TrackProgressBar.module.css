@@ -1,0 +1,22 @@
+.progressBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 90%;
+}
+.timeLabel {
+  font-size: 1.25rem;
+  color: var(--spotify-light-gray);
+  font-family: 'Roboto Mono', monospace;
+}
+.progressBarBg {
+  flex: 1;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progressBarFill {
+  height: 100%;
+  background-color: var(--spotify-green);
+}

@@ -6,17 +6,7 @@
   --spotify-light-gray: #b3b3b3;
   --spotify-white: #ffffff;
   --spotify-player: #282828;
-
-  /* SPOTIFY COLOR PALETTE CHEAT SHEET
-  ---------------------------------
-  --spotify-green:       Main action color (Play buttons, active states, toggle on).
-  --spotify-green-hover: Brightened green for hover interactions.
-  --spotify-black:       Deepest background for the main content area.
-  --spotify-dark-gray:   Elevated surfaces like Sidebars and Cards.
-  --spotify-player:      The control bar at the bottom or specific UI footers.
-  --spotify-white:       Primary text, headers, and prominent icons.
-  --spotify-light-gray:  Secondary text (artists, descriptions, timestamps).
-*/
+  --spotify-red: #e22134;
 
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
