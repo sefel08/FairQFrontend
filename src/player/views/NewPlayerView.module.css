@@ -14,19 +14,31 @@
 
 /* Top Section */
 .topSection {
-  height: 10%;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  gap: 10px;
   overflow: hidden;
 }
 .spotifyLogo {
   width: 180px;
   height: auto;
+  margin: 20px;
 }
 .showQRButton {
+  padding: 10px 20px;
+  margin-right: 20px;
+
+  background-color: var(--spotify-green);
+  color: var(--spotify-black);
+  border-radius: 10px;
+
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+}
+.playerButton {
+  min-width: 160px;
   padding: 10px 15px;
 
   background-color: var(--spotify-green);
@@ -46,6 +58,10 @@
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.9);
   z-index: 1000;
+}
+.modalCut {
+  margin-bottom: min(8vh, 15vw);
+  margin-bottom: min(8dvh, 15dvw);
 }
 .qrCode {
   width: 300px;
@@ -70,7 +86,7 @@
 
 /* Middle Section */
 .middleSection {
-  height: 82%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -101,15 +117,20 @@
 /* Bottom Section */
 .bottomSection {
   position: relative;
-  height: 8%;
+  height: 3.5rem;
   display: flex;
   flex-direction: row;
-  padding: 0 20px 20px 0;
+  margin: 20px;
   align-items: center;
   justify-content: end;
 }
+.bottomSectionMobile {
+  display: flex;
+}
+.bottomSectionDesktop {
+  display: none;
+}
 .optionsPanel {
-  height: 80%;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -121,8 +142,7 @@
 }
 .optionsButton {
   position: relative;
-  height: 100%;
-  padding: 15px;
+  padding: 0.5rem;
   box-sizing: border-box;
   background-color: var(--spotify-green);
   color: var(--spotify-black);
@@ -134,12 +154,9 @@
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
-.mainOptionsButton {
-  height: 80%;
-}
 .optionButtonImg {
-  height: 100%;
-  width: 100%;
+  height: 2.5rem;
+  width: 2.5rem;
 }
 .controlBox {
   position: absolute;
@@ -184,8 +201,8 @@
 }
 .resolutionSelect {
   width: 100%;
-  padding: 10px 40px 10px 16px;
-  font-size: 0.875rem;
+  padding: 0.5rem;
+  font-size: 0.75rem;
   font-weight: 700;
   font-family: sans-serif;
   color: var(--spotify-light-gray);
@@ -195,13 +212,69 @@
   border-radius: 10px;
   cursor: pointer;
 }
+.controlBox:has(.resolutionSelect) {
+  padding: 5px;
+}
 .tvQRWrapper {
   display: none;
 }
 .mobileQRWrapper {
   display: block;
 }
-
+@media (min-width: 600px) and (min-height: 1050px) {
+  .albumImage {
+    max-width: 500px;
+    border-radius: 8px;
+  }
+  .trackTitle {
+    font-size: 3rem;
+  }
+  .trackArtist {
+    font-size: 1.5rem;
+  }
+  .topSection {
+    height: 140px;
+  }
+  .spotifyLogo {
+    width: 280px;
+    margin: 31px;
+  }
+  .showQRButton {
+    padding: 20px 40px;
+    margin-right: 31px;
+    font-size: 2rem;
+  }
+  .optionButtonImg {
+    height: 4rem;
+    width: 4rem;
+  }
+  .bottomSection {
+    height: 5rem;
+  }
+  .controlBox {
+    width: 12rem;
+    padding: 10px;
+  }
+  .resolutionSelect {
+    font-size: 1.2rem;
+  }
+  .volumeSlider {
+    height: 16px;
+  }
+  .modalHeader {
+    font-size: 2rem;
+  }
+  .modalText {
+    font-size: 3rem;
+  }
+  .playerButton {
+    font-size: 2rem;
+  }
+  .qrCode {
+    width: 500px;
+    height: 500px;
+  }
+}
 /* TV view */
 @media (min-width: 1300px) {
   .mainContainer {
@@ -227,8 +300,19 @@
     align-items: center;
     padding: 0;    
   }
+  .spotifyLogo {
+    width: 253px;
+    margin: 36;
+  }
+  .modalText {
+    font-size: 2rem;
+  }
   .mobileQRWrapper {
     display: none;
+  }
+  .qrCode {
+    width: 300px;
+    height: 300px;
   }
   .tvQRWrapper {
     display: flex;
@@ -238,24 +322,32 @@
     margin-top: 20px;
   }
   .bottomSection {
+    position: relative;
     grid-column: 2;
     grid-row: 2;
     height: 100%;
     width: 100%;
-    align-items: flex-end;
+    margin: 0;
     background-color: var(--spotify-dark-gray);
-    box-sizing: border-box;
   }
-   .optionsPanel {
-    height: auto;
+  .bottomSectionMobile {
+    display: none;
+  }
+  .bottomSectionDesktop {
+    display: flex;
+  }
+  .optionsButton:first-child {
+    border-radius: 0;
   }
   .optionsButton {
-    height: auto;
-    padding: 10px;
+    height: 100%;
+    flex: 1;
   }
   .optionButtonImg {
-    height: 2.5rem;
-    width: 2.5rem;
+    padding: auto;
+  }
+  .controlBox {
+    left: 50%;
   }
   .hideQRButton {
     display: none;

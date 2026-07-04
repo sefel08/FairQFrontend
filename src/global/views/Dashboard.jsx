@@ -121,7 +121,7 @@ const Dashboard = () => {
                 }
                 {currentView === 'player' ? (
                   // <PlayerView rounded={hasMoreThanOneRole.current}/>
-                  <NewPlayerView />
+                  <NewPlayerView onlyPlayer={userRole.isPlayer && !userRole.isUser && !userRole.isHost} />
                 ) : currentView === 'user' ? (
                   <UserView resetTrigger={viewResetTrigger} />
                 ) : currentView === 'party' ? (

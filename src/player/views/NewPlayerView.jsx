@@ -21,7 +21,7 @@ import leave_icon from '../../assets/leave_icon.svg';
 
 const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
-const NewPlayerView = () => {
+const NewPlayerView = ({ onlyPlayer }) => {
     
     const { loadingAuth } = useAuth();
     const { currentTrack } = usePlayer();
@@ -81,7 +81,7 @@ const NewPlayerView = () => {
                             onClick={() => setShowQR(true)}
                             className={styles.showQRButton}
                         >
-                            Show QR Code
+                            QR Code
                         </motion.button>
                         ) : (
                         <motion.div
@@ -113,7 +113,7 @@ const NewPlayerView = () => {
                 </div>
                 <TrackProgressBar />
             </section>
-            <section className={styles.bottomSection}>
+            <section className={styles.bottomSection + ' ' + styles.bottomSectionMobile}>
                 <AnimatePresence>
                     {showOptions && (
                         <motion.div
@@ -180,13 +180,13 @@ const NewPlayerView = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 20 }}
                         transition={{ duration: 0.1 }}
-                        className={styles.modal}
+                        className={`${styles.modal} ${!onlyPlayer ? styles.modalCut : ''}`}
                     >
                         <p className={styles.modalHeader}>Do you want to leave the party?</p>
                         <motion.button
                         whileHover={{ scale: 1.05 }}
                         onClick={() => leavePartySession()}
-                        className={styles.showQRButton}
+                        className={styles.playerButton}
                         style={{ marginTop: '20px', backgroundColor: 'var(--spotify-red)', color: 'white' }}
                         >
                         Leave
@@ -194,7 +194,7 @@ const NewPlayerView = () => {
                         <motion.button
                         whileHover={{ scale: 1.05 }}
                         onClick={() => setActiveOption(null)}
-                        className={styles.showQRButton}
+                        className={styles.playerButton}
                         style={{ marginTop: '10px' }}
                         >
                         Back
@@ -214,6 +214,82 @@ const NewPlayerView = () => {
                 >
                     <img src={options_icon} alt="Options" className={styles.optionButtonImg} />
                 </motion.button>
+            </section>
+            <section className={styles.bottomSection + ' ' + styles.bottomSectionDesktop}>
+                <button className={styles.optionsButton} onClick={() => handleOptionClick('leave')}>
+                    <img src={leave_icon} alt="Leave" className={styles.optionButtonImg} />
+                </button>
+                <AnimatePresence>
+                    {activeOption === 'leave' && (
+                    <motion.div
+                        key="leave-modal"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ duration: 0.1 }}
+                        className={`${styles.modal} ${!onlyPlayer ? styles.modalCut : ''}`}
+                    >
+                        <p className={styles.modalHeader}>Do you want to leave the party?</p>
+                        <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        onClick={() => leavePartySession()}
+                        className={styles.playerButton}
+                        style={{ marginTop: '20px', backgroundColor: 'var(--spotify-red)', color: 'white' }}
+                        >
+                        Leave
+                        </motion.button>
+                        <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        onClick={() => setActiveOption(null)}
+                        className={styles.playerButton}
+                        style={{ marginTop: '10px' }}
+                        >
+                        Back
+                        </motion.button>
+                    </motion.div>)}
+                </AnimatePresence>
+                <button className={styles.optionsButton} >
+                    <img src={speaker_icon} alt="Volume" className={styles.optionButtonImg} onClick={() => handleOptionClick('volume')} />
+                </button>
+                <AnimatePresence>
+                    {activeOption === 'volume' && (
+                        <motion.div
+                            key="volume-control"
+                            initial={{ opacity: 0, y: 10, x: '-50%' }}
+                            animate={{ opacity: 1, y: 0, x: '-50%' }}
+                            exit={{ opacity: 0, y: 10,  x: '-50%' }}
+                            transition={{ duration: 0.1 }}
+                            className={styles.controlBox}
+                        >
+                            <input type="range" min="0" max="100" className={styles.volumeSlider} value={volume*100} onChange={(e) => setVolume(parseInt(e.target.value) / 100)} />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                <button className={styles.optionsButton} >
+                    <img src={equalizer_icon} alt="Resolution" className={styles.optionButtonImg} onClick={() => handleOptionClick('resolution')} />
+                </button>
+                <AnimatePresence>
+                    {activeOption === 'resolution' && (
+                        <motion.div
+                            key="resolution-control"
+                            initial={{ opacity: 0, y: 10, x: '-50%' }}
+                            animate={{ opacity: 1, y: 0, x: '-50%' }}
+                            exit={{ opacity: 0, y: 10,  x: '-50%' }}
+                            transition={{ duration: 0.1 }}
+                            className={styles.controlBox}
+                        >
+                            <select className={styles.resolutionSelect} >
+                                <option value="auto">Automatic</option>
+                                <option value="low">Low</option>
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="veryHigh">Very High</option>
+                                <option value="lossless">Lossless</option>
+                            </select>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                
             </section>
         </div>
     );
