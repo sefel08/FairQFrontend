@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, use } from 'react';
+
 import { useAuth } from '../../global/contexts/AuthContext';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -39,7 +40,7 @@ export const UserProvider = ({ children }) => {
         .then(data => {
             setUserPlaylists(data);
         })
-        .catch(err => console.error("Błąd", err));
+        .catch(err => console.error("Failed to fetch playlists:", err));
 
     }, [spotifyAuthorized, loadingAuth]);
 
@@ -49,6 +50,9 @@ export const UserProvider = ({ children }) => {
         })
         .then((res) => { if(!res.ok) return []; return res.json(); })
         .then(data => {
+            if (queue.length === 0 && data.length === 0) {
+                return;
+            }
             setQueue(data);
         })
         .catch(err => console.error("Błąd", err));

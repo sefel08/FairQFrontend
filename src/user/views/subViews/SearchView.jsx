@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import SearchBox from '../../components/SearchBox/SearchBox';
-import TrackCard from '../../../global/components/TrackCard/TrackCard';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './SubViewsStyle.module.css';
+
+import { useUser } from '../../contexts/UserContext';
+
+import SearchBox from '../../components/SearchBox/SearchBox';
+import TrackList from '../../../global/components/TrackList';
+
+import addToQueueIcon from '../../../assets/add_to_queue_icon.svg';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-const SearchView = ({ scrollRef, onTrackClick, setSearchQuery, searchQuery, searchResults, setSearchResults, queryForResults, setQueryForResults }) => {
+const SearchView = ({ scrollRef }) => {
+
+    const { addToQueue, setSearchQuery, searchQuery, searchResults, setSearchResults, queryForResults, setQueryForResults } = useUser();
 
     const searchTracks = async (query) => {
         try {
@@ -26,9 +33,13 @@ const SearchView = ({ scrollRef, onTrackClick, setSearchQuery, searchQuery, sear
             }
 
         } catch (error) {
-            console.error("Błąd połączenia:", error);
+            console.error("Failed to search tracks:", error);
         }
     };
+
+    const handleTrackAddToQueue = useCallback((track) => {
+        addToQueue(track.id);
+    }, [addToQueue]);
 
     useEffect(() => {
         if (searchQuery) {
@@ -40,7 +51,7 @@ const SearchView = ({ scrollRef, onTrackClick, setSearchQuery, searchQuery, sear
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.header} style={{ marginBottom: '0.3rem' }}>Szukaj piosenek</h1>
+            <h1 className={styles.header}>Szukaj piosenek</h1>
             
             <SearchBox onSearch={setSearchQuery} />
 
@@ -49,9 +60,7 @@ const SearchView = ({ scrollRef, onTrackClick, setSearchQuery, searchQuery, sear
             )}
 
             <div className={styles.list}>
-                {searchResults.map((track) => (
-                    <TrackCard key={track.id} track={track} onClick={() => onTrackClick(track.id)} />
-                ))}
+                <TrackList tracks={searchResults} options={[{ label: 'Add to Queue', icon: addToQueueIcon, color: 'var(--spotify-green)', onClick: handleTrackAddToQueue }]} />
             </div>
         </div>
     );

@@ -74,6 +74,10 @@ export const PartyProvider = ({ children }) => {
                         console.log('Received REFRESH_TOKEN message, refreshing spotify token');
                         refreshSpotifyToken();
                         break;
+                    case 'REFRESH_QUEUE':
+                        console.log('Received REFRESH_QUEUE message, refreshing user queue');
+                        partyStore.notify('userQueue');
+                        break;
                 }
             });
         };

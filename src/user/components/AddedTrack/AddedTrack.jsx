@@ -1,12 +1,15 @@
+import React from "react";
+
 import TrackCard from "../../../global/components/TrackCard/TrackCard";
 import styles from "./AddedTrack.module.css";
 
 import default_avatar from "../../../assets/profile_default.svg";
 
-const AddedTrack = ({ track, profile, withoutUnderline = false }) => {
+const AddedTrack = ({ track, profile, index, isOpen, onClick, withoutUnderline = false }) => {
+
     return (
         <div className={styles.addedCard}>
-            <TrackCard track={track} squared={true} />
+            <TrackCard isOpen={isOpen} track={track} index={index} squared={true} onClick={onClick} />
             <div className={`${styles.addedBy} ${!withoutUnderline && profile.spotifyAuthorized ? styles.authorized : ''}`}> 
                 Dodane przez: 
                 <span className={styles.profileName}>{profile.displayName}</span>
@@ -20,4 +23,4 @@ const AddedTrack = ({ track, profile, withoutUnderline = false }) => {
     );
 };
 
-export default AddedTrack;
+export default React.memo(AddedTrack);

@@ -4,6 +4,7 @@ class PartyStore {
             partyQueueVersion: 0,
             partyUsersVersion: 0,
             skipVotes: 0,
+            userQueueVersion: 0,
         }
         this.listeners = new Set();
     }
@@ -22,6 +23,7 @@ class PartyStore {
             ...(key === 'partyQueue' && { partyQueueVersion: this.state.partyQueueVersion + 1 }),
             ...(key === 'partyUsers' && { partyUsersVersion: this.state.partyUsersVersion + 1 }),
             ...(key === 'skipVotes' && { skipVotes: value }),
+            ...(key === 'userQueue' && { userQueueVersion: this.state.userQueueVersion + 1 }),
         };
         this.listeners.forEach(listener => listener());
     }

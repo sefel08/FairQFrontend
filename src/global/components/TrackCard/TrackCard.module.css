@@ -1,4 +1,5 @@
 .trackCardContainer {
+    position: relative;
     display: flex;
     width: 100%;
     max-width: 100%;
@@ -76,9 +77,30 @@
 /* Options */
 
 .optionsContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    background-color: transparent;
+    z-index: 10;
+}
+.optionButton {
+    height: 100%;
+    aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: var(--spotify-green);
+}
+.optionIcon {
+    width: 40px;
+    height: 40px;
+    padding: 8px 16px;
 }

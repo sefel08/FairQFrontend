@@ -15,26 +15,21 @@ import SkipIcon from '../../assets/skip_icon.svg?react';
 
 const UserView = ({ resetTrigger }) => {
     
-    const { user, authorized, login } = useAuth();
-    const { queue, refreshUserQueue } = useUser();
+    const { authorized, login } = useAuth();
+    const { queue, refreshUserQueue, setSelectedPlaylist } = useUser();
     
     const { votedToSkip, handleSkip } = useParty();
     const skipVotes = usePartySelector(state => state.skipVotes);
+    const userQueueVersion = usePartySelector(state => state.userQueueVersion);
 
-    const [currentSubView, setCurrentSubView] = useState('home');
-    const [lastView, setLastView] = useState('home');
-    
-    const handleViewChange = (view) => {
-        setLastView(currentSubView);
-        setCurrentSubView(view);
-    };
+    const [currentSubView, setCurrentSubView] = useState('home');    
 
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isQueueOpen, setQueueOpen] = useState(false);
 
     useEffect(() => {
         refreshUserQueue();
-    }, []);
+    }, [userQueueVersion]);
     useEffect(() => {
         setCurrentSubView('home');
     }, [resetTrigger]);
@@ -45,15 +40,15 @@ const UserView = ({ resetTrigger }) => {
             {/* Header */}
             <header className={styles.header}>
                 <button className={styles.sidebarBtn} onClick={() => setSidebarOpen(true)}>☰</button>
-                <button className={`${styles.headerButton} ${currentSubView === 'home' ? styles.activeHeaderButton : ''}`} onClick={() => setCurrentSubView('home')}>Home</button>
-                <button className={`${styles.headerButton} ${currentSubView === 'library' ? styles.activeHeaderButton : ''}`} onClick={() => setCurrentSubView('library')}>Biblioteka</button>
-                <button className={`${styles.headerButton} ${currentSubView === 'search' ? styles.activeHeaderButton : ''}`} onClick={() => setCurrentSubView('search')}>Search</button>
+                <button className={`${styles.headerButton} ${currentSubView === 'home' ? styles.activeHeaderButton : ''}`} onClick={() => { setCurrentSubView('home'); setSelectedPlaylist(null); }}>Home</button>
+                <button className={`${styles.headerButton} ${currentSubView === 'library' ? styles.activeHeaderButton : ''}`} onClick={() => { setCurrentSubView('library'); setSelectedPlaylist(null); }}>Biblioteka</button>
+                <button className={`${styles.headerButton} ${currentSubView === 'search' ? styles.activeHeaderButton : ''}`} onClick={() => { setCurrentSubView('search'); setSelectedPlaylist(null); }}>Search</button>
             </header>
 
             {/* Main Content */}
             <main className={styles.mainContent}>
                 <PoweredBySpotify />
-                <MainBox userName={user.name} currentView={currentSubView} lastView={lastView} setView={handleViewChange} />
+                <MainBox currentView={currentSubView} setView={setCurrentSubView} />
                 <button className={styles.showQueueBtn} onClick={() => setQueueOpen(true)}>Pokaż kolejkę</button>
                 <button className={`${styles.skipButton} ${votedToSkip ? styles.active : ''}`} onClick={handleSkip}>
                     <span className={`${styles.skipCount} ${votedToSkip ? styles.active : ''}`}>

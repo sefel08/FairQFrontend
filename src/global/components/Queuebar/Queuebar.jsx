@@ -1,22 +1,26 @@
 import React from 'react';
 import styles from './Queuebar.module.css';
-import TrackCard from '../TrackCard/TrackCard';
+
 import { useUser } from '../../../user/contexts/UserContext';
+
+import TrackList from '../TrackList';
+
+import deleteIcon from '../../../assets/delete_icon.svg'
 
 const Queuebar = ({ queue = [] }) => {
 
     const { removeFromQueue } = useUser();
 
-    console.log('Queuebar rerendered');
+    const handleRemoveFromQueue = React.useCallback((track, index) => {
+        removeFromQueue(index);
+    }, [removeFromQueue]);
 
     return (
         <aside className={styles.container}>
             <div className={styles.scrollArea}>
                 <h3 className={styles.title}>Kolejka</h3>
                 {queue.length > 0 ? (
-                    queue.map((track, index) => (
-                        <TrackCard key={index} track={track} onClick={() => { removeFromQueue(index) }}/>
-                    ))
+                    <TrackList tracks={queue} options={[{ label: 'Delete', icon: deleteIcon, color: 'var(--spotify-red)', onClick: handleRemoveFromQueue }]} />
                 ) : (
                     <p style={{ color: 'var(--spotify-light-gray)', textAlign: 'center', fontSize: '1.25rem' }}>
                         Kolejka jest pusta

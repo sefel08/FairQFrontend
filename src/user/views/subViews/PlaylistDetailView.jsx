@@ -1,12 +1,19 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import TrackCard from '../../../global/components/TrackCard/TrackCard';
 import styles from './SubViewsStyle.module.css';
+
+import { useUser } from '../../contexts/UserContext';
+
+import TrackList from '../../../global/components/TrackList';
+
 import defaultImage from '../../../assets/spotify_icon.png';
+import addToQueueIcon from '../../../assets/add_to_queue_icon.svg';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
+const PlaylistDetailsView = ({ onBack }) => {
     
+    const { selectedPlaylist, addToQueue } = useUser();
+
     const TRACKS_RETURN_LIMIT = 50; // backend returns 50 tracks per request
     const [tracks, setTracks] = useState([]);
     const [offset, setOffset] = useState(0);
@@ -58,6 +65,9 @@ const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
         return () => observer.disconnect();
     }, [downloadPlaylistItems]);
 
+    const handleTrackClick = React.useCallback((track, index) => {
+        addToQueue(track.id);
+    }, [addToQueue]);
 
     return (
         <>
@@ -79,13 +89,10 @@ const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
                 <hr style={{ marginBottom: '20px', marginTop: '0', width: '100%' }}/>
 
                 <div className={styles.list}>
-                    {tracks.map((track) => (
-                        <TrackCard 
-                            key={track.id}
-                            track={track} 
-                            onClick={() => onTrackClick(track.id)} 
-                        />
-                    ))}
+                    <TrackList 
+                        tracks={tracks} 
+                        options={[{ label: 'Add to Queue', icon: addToQueueIcon, color: 'var(--spotify-green)', onClick: handleTrackClick }]} 
+                    />
 
                     {tracks.length === 0 && !loadingData && (
                         <p style={{ fontSize: '1.5rem', color: 'var(--spotify-light-gray)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Brak utworów do wyświetlenia</p>

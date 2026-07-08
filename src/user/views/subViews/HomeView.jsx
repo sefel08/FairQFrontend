@@ -1,14 +1,21 @@
 import React from 'react';
+import styles from './SubViewsStyle.module.css';
+
+import { useAuth } from '../../../global/contexts/AuthContext';
+import { useUser } from '../../contexts/UserContext';
+
 import SearchBox from '../../components/SearchBox/SearchBox';
 import PlaylistCard from '../../../global/components/PlaylistCard/PlaylistCard';
 import PlaylistContainer from '../../../global/components/PlaylistContainer/PlaylistContainer';
-import styles from './SubViewsStyle.module.css';
 
-const HomeView = ({ userName = "Użytkowniku", changeToSearchView, setSearchQuery, userPlaylists, onPlaylistSelect }) => {
+const HomeView = ({ setView }) => {
+
+    const { user } = useAuth();
+    const { setSearchQuery, searchQuery, searchResults, setSearchResults, queryForResults, setQueryForResults, userPlaylists, setSelectedPlaylist } = useUser();
 
     const handleSearch = (query) => {
         setSearchQuery(query);
-        changeToSearchView();
+        setView('search');
     }
 
     return (
@@ -16,11 +23,11 @@ const HomeView = ({ userName = "Użytkowniku", changeToSearchView, setSearchQuer
             
             <SearchBox onSearch={handleSearch} />
             
-            <h1 className={styles.header}>Dzień dobry, {userName}</h1>
+            <h1 className={styles.header}>Dzień dobry, {user.displayName || "Użytkowniku"}</h1>
             
             <PlaylistContainer style={ { marginBottom: '1rem' } }>
                 {userPlaylists.map((playlist) => (
-                    <PlaylistCard key={playlist.id} playlist={playlist} onClick={() => onPlaylistSelect(playlist)} variant={"compact"} />
+                    <PlaylistCard key={playlist.id} playlist={playlist} onClick={() => setSelectedPlaylist(playlist)} variant={"compact"} />
                 ))}
             </PlaylistContainer>
 

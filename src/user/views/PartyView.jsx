@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "./PartyView.module.css";
 
 import { useParty } from "../../global/contexts/PartyContext";
@@ -18,6 +18,12 @@ const PartyView = () => {
     const usersVersion = usePartySelector(state => state.partyUsersVersion);
     const [partyQueueInfo, setPartyQueueInfo] = useState({ queue: [], currentlyPlaying: null });
     const [partyUsers, setPartyUsers] = useState([]);
+
+    // TrackCards options
+    const [selectedCard, setSelectedCard] = useState(null);
+    const handleCardClick = useCallback((uniqueId) => {
+        setSelectedCard(selectedCard === uniqueId ? null : uniqueId);
+    }, [selectedCard]);
 
     useEffect(() => {
         getPartyQueue().then(queueData => setPartyQueueInfo(queueData));
@@ -44,7 +50,14 @@ const PartyView = () => {
                         <div className={styles.currentlyPlaying}>
                             <h3 className={styles.mainContentHeader}>Currently Playing</h3>
                             {partyQueueInfo.currentlyPlaying && (
-                                <AddedTrack track={partyQueueInfo.currentlyPlaying.track} profile={partyQueueInfo.currentlyPlaying.profile} withoutUnderline={true} />
+                                <AddedTrack 
+                                    track={partyQueueInfo.currentlyPlaying.track}
+                                    profile={partyQueueInfo.currentlyPlaying.profile}
+                                    index={-1}
+                                    isOpen={selectedCard === partyQueueInfo.currentlyPlaying.track.id + -1}
+                                    onClick={handleCardClick}
+                                    withoutUnderline={true} 
+                                />
                             )}
                         </div>
                         )}
@@ -52,7 +65,14 @@ const PartyView = () => {
                         (<>
                             <hr style={{ marginBottom: '1dvh', marginTop: '0', width: '100%' }}/>
                             {partyQueueInfo.queue.map((item, index) => (
-                                <AddedTrack key={index} track={item.track} profile={item.profile} />
+                                <AddedTrack
+                                    key={item.track + item.profile.displayName + index}
+                                    track={item.track}
+                                    profile={item.profile}
+                                    index={index}
+                                    isOpen={selectedCard === item.track.id + index}
+                                    onClick={handleCardClick}
+                                />
                             ))}
                         </>) : (<>
                             <h3 className={styles.mainContentHeader}>Queue is empty</h3>
