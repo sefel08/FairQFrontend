@@ -1,13 +1,23 @@
-.trackCard {
+.trackCardContainer {
     display: flex;
-    /* align-items: center; */
-    padding: 0 15px 0 0; 
-    border-radius: 4px;
-    gap: 12px;
-    cursor: pointer;
-    user-select: none;
     width: 100%;
-    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.trackCard {
+    flex: 1;
+    width: 0;
+    min-width: 0;
+
+    display: flex;
+    gap: 12px;
+
+    padding: 0 15px 0 0;
+    box-sizing: border-box; 
+    border-radius: 4px;
+    
+    cursor: pointer;
 }
 
 .albumImage {
@@ -17,42 +27,40 @@
     object-fit: cover;
     flex-shrink: 0;
 }
-
 .trackDetails {
-    display: flex;
-    flex-direction: column;
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
     padding: 5px 0;
 }
-
-.trackName {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.trackArtists {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    color: var(--spotify-light-gray);
-    font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .trackMeta {
     display: flex;
     align-items: center;
-    margin-left: 10px;
+}
+
+.trackName {
+    width: 100%;
+    display: block;
+
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.trackArtists {
+    width: 100%;
+    display: block;
+
+    color: var(--spotify-light-gray);
+    font-size: 0.75rem;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .duration {
@@ -63,4 +71,14 @@
 
 .squared {
     border-radius: 0;
+}
+
+/* Options */
+
+.optionsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--spotify-green);
 }

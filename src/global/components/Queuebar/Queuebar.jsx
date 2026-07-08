@@ -7,6 +7,8 @@ const Queuebar = ({ queue = [] }) => {
 
     const { removeFromQueue } = useUser();
 
+    console.log('Queuebar rerendered');
+
     return (
         <aside className={styles.container}>
             <div className={styles.scrollArea}>
@@ -25,4 +27,4 @@ const Queuebar = ({ queue = [] }) => {
     );
 };
 
-export default Queuebar;
+export default React.memo(Queuebar);

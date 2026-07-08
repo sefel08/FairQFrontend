@@ -4,13 +4,9 @@
     width: 100%;
     height: auto;
     box-sizing: border-box;
+    padding: 0 3vh 3vh 3vh;
+    padding: 0 3dvh 3dvh 3dvh;
 }
-.containerUpgrade {
-    background: linear-gradient(to bottom, 
-        var(--spotify-medium-border) 0%, 
-        var(--spotify-black) 300px,
-        var(--spotify-black) 100%
-    );}
 .header {
     font-size: 2rem;
     font-weight: 800;
@@ -32,7 +28,7 @@
     gap: 1vh;
     gap: 1dvh;
     width: 100%;
-    padding-bottom: calc(2dvh + 3rem);
+    padding-bottom: calc(2vh + 3rem);
     padding-bottom: calc(2dvh + 3rem);
 }
 .libraryStickyHeader {
@@ -72,9 +68,7 @@
 .playlistDataWrapper {
     display: flex;
     width: 100%;
-    margin-bottom: 20px;
-    margin-top: calc(4rem - 2vh);
-    margin-top: calc(4rem - 2dvh);
+    margin: 20px 0;
 }
 .playlistImage {
     width: 128px;
@@ -113,12 +107,21 @@
 }
 .backButton {
     position: absolute;
-    height: 4rem;
+    transform: translateY(-100%);
+    height: calc((max(2dvh, 8px) * 2) + 19.1667px);
     aspect-ratio: 1/1;
-    border-radius: 20px 0 20px 0;
+    border-radius: 20px 0 0 0;
     background: var(--spotify-dark-gray);
-    border-right: 1px solid var(--spotify-light-border);
-    border-bottom: 1px solid var(--spotify-light-border);
+    background: linear-gradient(
+        to right, 
+        var(--spotify-dark-gray) 0%,
+        var(--spotify-dark-gray) 75%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 8px;
     font-size: 1.75rem;
     cursor: pointer;
 }

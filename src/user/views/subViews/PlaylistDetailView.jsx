@@ -2,13 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TrackCard from '../../../global/components/TrackCard/TrackCard';
 import styles from './SubViewsStyle.module.css';
 import defaultImage from '../../../assets/spotify_icon.png';
-import { p } from 'framer-motion/client';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
     
-    const TRACKS_RETURN_LIMIT = 50; // Spotify API returns max 100 tracks per request
+    const TRACKS_RETURN_LIMIT = 50; // backend returns 50 tracks per request
     const [tracks, setTracks] = useState([]);
     const [offset, setOffset] = useState(0);
     const downloadingRef = useRef(false); // to prevent multiple simultaneous downloads
@@ -63,7 +62,7 @@ const PlaylistDetailsView = ({ selectedPlaylist, onBack, onTrackClick }) => {
     return (
         <>
             <button className={styles.backButton} onClick={onBack}>⬅</button>
-            <div className={styles.container + ' ' + styles.containerUpgrade}>
+            <div className={styles.container}>
                 <div className={styles.playlistDataWrapper}>
                     <img 
                         src={selectedPlaylist.imageUrl || defaultImage}

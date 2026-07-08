@@ -308,9 +308,9 @@
     padding: 0;    
   }
   .spotifyLogo {
-    width: 75%;
+    width: 60%;
     max-width: 500px;
-    margin: calc(75% * (406 / 1483) * 0.4);
+    margin: calc(60% * (406 / 1483) * 0.4);
   }
   .modalHeader {
     font-size: clamp(1.25rem, 2vw, 2.75rem);
@@ -322,8 +322,9 @@
     display: none;
   }
   .qrCode {
-    width: 75%;
-    max-width: 500px;
+    width: 60%;
+    max-width: min(500px, 0.5 * 80vh);
+    max-width: min(500px, 0.5 * 80dvh);
     height: auto;
     aspect-ratio: 1 / 1;
   }

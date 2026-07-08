@@ -82,6 +82,7 @@ const UserView = ({ resetTrigger }) => {
                 className={`${styles.overlay} ${(isSidebarOpen || isQueueOpen) ? styles.active : ''}`} 
                 onClick={() => { setSidebarOpen(false); setQueueOpen(false); }}
             />
+            
         </div>
     );
 }
