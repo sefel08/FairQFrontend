@@ -1,6 +1,7 @@
 import React, { useState, useEffect, use, useRef } from 'react';
 import styles from './Dashboard.module.css';
 
+import { TrackCardFlyingProvider } from '../../user/contexts/TrackCardFlyingContext';
 import { UserProvider } from '../../user/contexts/UserContext';
 import { PlayerProvider } from '../../player/contexts/PlayerContext';
 import { PlayerPlaybackProvider } from '../../player/contexts/PlayerPlaybackContext';
@@ -18,6 +19,7 @@ import Navbar from '../components/Navbar/Navbar';
 import SpotifySDKContainer from '../../player/components/SpotifySDKContainer';
 
 import restartIcon from '../../assets/restart_icon.svg';
+import TrackCard from '../components/TrackCard/TrackCard';
 
 const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL
 
@@ -78,77 +80,81 @@ const Dashboard = () => {
     <UserProvider>
       <PlayerProvider isPlayer={userRole.isPlayer}>
         <PlayerPlaybackProvider isPlayer={userRole.isPlayer}>
-        
-        {new URLSearchParams(window.location.search).get('loginError') ? (
-          ( /* login error handling */
-          <div className={styles.errorPage}>
-            <h1>Błąd logowania</h1>
-            <p>Nie udało się zalogować do Spotify. Upewnij się, że masz aktywne połączenie z internetem i spróbuj ponownie.</p>
-            <button onClick={() => window.location.href = FRONTEND_URL}>Spróbuj ponownie</button>
-          </div>
-          )
-        ) : (loadingAuth || loadingParty) ? (
-          ( /* loading state */
-            <div className={styles.dashboard}>
-              <div className={styles.loading}>Ładowanie...</div>
-            </div>
-          )
-        ) : (!eulaAccepted) ? (
-          ( /* EULA acceptance view */
-            <EulaView onAccept={() => {
-              setEulaAccepted(true);
-              localStorage.setItem('acceptedEula', 'true');
-            }} />
-          )
-        ) : ((!authorized || !partyId) || mustRejoinParty) ? (
-          ( /* Select view */
-            <>
-              <button className={styles.selectViewRestartButton}
-                onClick={() => {
-                  localStorage.removeItem('operation');
-                  setSelectViewRestartTrigger(prev => prev + 1);
-                }}
-              >
-                <img src={restartIcon} alt="Restart" className={styles.selectViewRestartButtonicon}/>
-              </button>
-              <SelectView key={selectViewRestartTrigger} />
-            </>
-          )
-        ) : (userRole.isPlayer && !wasInSelect.current && !clickedSomething) ? (    
-          ( /* Make sure user clicks something to disable auto-play block in browsers */
-            <div 
-              style={{ width: '100%', height: '100%', fontSize: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
-              onClick={() => {
-                setClickedSomething(true)
-                sessionStorage.setItem('clickedSomething', 'true');
-              }}
-            >
-              Kliknij w ekran, aby uruchomić odtwarzacz Spotify
-            </div>
-          )
-        ) : (
-          ( /* Main Dashboard */
-            <div className={styles.dashboard}>
-                {
-                  userRole.isPlayer && <SpotifySDKContainer setClickedSomething={setClickedSomething} />
-                }
-                {currentView === 'player' ? (
-                  // <PlayerView rounded={hasMoreThanOneRole.current}/>
-                  <NewPlayerView onlyPlayer={userRole.isPlayer && !userRole.isUser && !userRole.isHost} />
-                ) : currentView === 'user' ? (
-                  <UserView resetTrigger={viewResetTrigger} />
-                ) : currentView === 'party' ? (
-                  <PartyView />
-                ) : currentView === 'host' ? (
-                  <p style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Work in progress</p>
-                ) : (
-                  <p style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Something went wrong</p>
-                )}
-              <Navbar changeView={handleViewChange} />
-            </div>
-          )
-        )}
+          <TrackCardFlyingProvider>
 
+            {new URLSearchParams(window.location.search).get('loginError') ? (
+              ( /* login error handling */
+              <div className={styles.errorPage}>
+                <h1>Błąd logowania</h1>
+                <p>Nie udało się zalogować do Spotify. Upewnij się, że masz aktywne połączenie z internetem i spróbuj ponownie.</p>
+                <button onClick={() => window.location.href = FRONTEND_URL}>Spróbuj ponownie</button>
+              </div>
+              )
+            ) : (loadingAuth || loadingParty) ? (
+              ( /* loading state */
+                <div className={styles.dashboard}>
+                  <div className={styles.loading}>Ładowanie...</div>
+                </div>
+              )
+            ) : (!eulaAccepted) ? (
+              ( /* EULA acceptance view */
+                <EulaView onAccept={() => {
+                  setEulaAccepted(true);
+                  localStorage.setItem('acceptedEula', 'true');
+                }} />
+              )
+            ) : ((!authorized || !partyId) || mustRejoinParty) ? (
+              ( /* Select view */
+                <>
+                  <button className={styles.selectViewRestartButton}
+                    onClick={() => {
+                      localStorage.removeItem('operation');
+                      setSelectViewRestartTrigger(prev => prev + 1);
+                    }}
+                  >
+                    <img src={restartIcon} alt="Restart" className={styles.selectViewRestartButtonicon}/>
+                  </button>
+                  <SelectView key={selectViewRestartTrigger} />
+                </>
+              )
+            ) : (userRole.isPlayer && !wasInSelect.current && !clickedSomething) ? (    
+              ( /* Make sure user clicks something to disable auto-play block in browsers */
+                <div 
+                  style={{ width: '100%', height: '100%', fontSize: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
+                  onClick={() => {
+                    setClickedSomething(true)
+                    sessionStorage.setItem('clickedSomething', 'true');
+                  }}
+                >
+                  Kliknij w ekran, aby uruchomić odtwarzacz Spotify
+                </div>
+              )
+            ) : (
+              ( /* Main Dashboard */
+                <div className={styles.dashboard}>
+                    {
+                      userRole.isPlayer && <SpotifySDKContainer setClickedSomething={setClickedSomething} />
+                    }
+                    {currentView === 'player' ? (
+                      // <PlayerView rounded={hasMoreThanOneRole.current}/>
+                      <NewPlayerView onlyPlayer={userRole.isPlayer && !userRole.isUser && !userRole.isHost} />
+                    ) : currentView === 'user' ? (
+
+                        <UserView resetTrigger={viewResetTrigger} />
+
+                    ) : currentView === 'party' ? (
+                      <PartyView />
+                    ) : currentView === 'host' ? (
+                      <p style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Work in progress</p>
+                    ) : (
+                      <p style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Something went wrong</p>
+                    )}
+                  <Navbar changeView={handleViewChange} />
+                </div>
+              )
+            )}
+
+          </TrackCardFlyingProvider>
         </PlayerPlaybackProvider>
       </PlayerProvider>
     </UserProvider>

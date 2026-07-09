@@ -16,7 +16,7 @@ import SkipIcon from '../../assets/skip_icon.svg?react';
 const UserView = ({ resetTrigger }) => {
     
     const { authorized, login } = useAuth();
-    const { queue, refreshUserQueue, setSelectedPlaylist } = useUser();
+    const { refreshUserQueue, setSelectedPlaylist } = useUser();
     
     const { votedToSkip, handleSkip } = useParty();
     const skipVotes = usePartySelector(state => state.skipVotes);
@@ -49,7 +49,7 @@ const UserView = ({ resetTrigger }) => {
             <main className={styles.mainContent}>
                 <PoweredBySpotify />
                 <MainBox currentView={currentSubView} setView={setCurrentSubView} />
-                <button className={styles.showQueueBtn} onClick={() => setQueueOpen(true)}>Pokaż kolejkę</button>
+                <button id={'queue-button'} className={styles.showQueueBtn} onClick={() => setQueueOpen(true)}>Pokaż kolejkę</button>
                 <button className={`${styles.skipButton} ${votedToSkip ? styles.active : ''}`} onClick={handleSkip}>
                     <span className={`${styles.skipCount} ${votedToSkip ? styles.active : ''}`}>
                         {skipVotes !== 0 ? skipVotes : ''}
@@ -69,7 +69,7 @@ const UserView = ({ resetTrigger }) => {
             {/* Queuebar wysuwany od dołu */}
             <aside className={`${styles.queueContainer} ${isQueueOpen ? styles.active : ''}`}>
                 <div className={styles.queueTopBar} onClick={() => setQueueOpen(false)}>━</div>
-                <Queuebar queue={queue} />
+                <Queuebar />
             </aside>
 
             {/* gray overlay behind */}

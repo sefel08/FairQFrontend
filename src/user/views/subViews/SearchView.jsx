@@ -60,7 +60,7 @@ const SearchView = ({ scrollRef }) => {
             )}
 
             <div className={styles.list}>
-                <TrackList tracks={searchResults} options={[{ label: 'Add to Queue', icon: addToQueueIcon, color: 'var(--spotify-green)', onClick: handleTrackAddToQueue }]} />
+                <TrackList data={searchResults} options={[{ label: 'Add to Queue', icon: addToQueueIcon, color: 'var(--spotify-green)', onClick: handleTrackAddToQueue, shouldFly: true }]} />
             </div>
         </div>
     );

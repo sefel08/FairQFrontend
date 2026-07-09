@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styles from "./PartyView.module.css";
+import { LayoutGroup, AnimatePresence, motion } from "framer-motion";
 
 import { useParty } from "../../global/contexts/PartyContext";
 import { usePartySelector } from "../../global/components/usePartySelector";
@@ -20,10 +21,10 @@ const PartyView = () => {
     const [partyUsers, setPartyUsers] = useState([]);
 
     // TrackCards options
-    const [selectedCard, setSelectedCard] = useState(null);
+    const [selectedCardListId, setSelectedCardListId] = useState(null);
     const handleCardClick = useCallback((uniqueId) => {
-        setSelectedCard(selectedCard === uniqueId ? null : uniqueId);
-    }, [selectedCard]);
+        setSelectedCardListId(selectedCardListId === uniqueId ? null : uniqueId);
+    }, [selectedCardListId]);
 
     useEffect(() => {
         getPartyQueue().then(queueData => setPartyQueueInfo(queueData));
@@ -53,27 +54,49 @@ const PartyView = () => {
                                 <AddedTrack 
                                     track={partyQueueInfo.currentlyPlaying.track}
                                     profile={partyQueueInfo.currentlyPlaying.profile}
-                                    index={-1}
-                                    isOpen={selectedCard === partyQueueInfo.currentlyPlaying.track.id + -1}
+                                    listUniqueId={0}
+                                    isOpen={selectedCardListId === 0}
                                     onClick={handleCardClick}
                                     withoutUnderline={true} 
                                 />
                             )}
                         </div>
                         )}
-                        {partyQueueInfo.queue.length > 0 ?
+                        {partyQueueInfo.queue && Object.keys(partyQueueInfo.queue).length > 0 ?
                         (<>
                             <hr style={{ marginBottom: '1dvh', marginTop: '0', width: '100%' }}/>
-                            {partyQueueInfo.queue.map((item, index) => (
-                                <AddedTrack
-                                    key={item.track + item.profile.displayName + index}
-                                    track={item.track}
-                                    profile={item.profile}
-                                    index={index}
-                                    isOpen={selectedCard === item.track.id + index}
-                                    onClick={handleCardClick}
-                                />
-                            ))}
+                            <LayoutGroup>
+                                <AnimatePresence initial={false}>
+                                    {Object.entries(partyQueueInfo.queue).map(([queueItemId, item]) => (
+                                        <motion.div
+                                            key={queueItemId}
+                                            layout
+                                            initial={{ 
+                                                opacity: 0,
+                                            }}
+                                            animate={{ 
+                                                opacity: 1,
+                                            }}
+                                            exit={{ 
+                                                opacity: 0,
+                                            }}
+                                            transition={{
+                                                type: 'tween',
+                                                ease: [0.25, 1, 0.5, 1],
+                                                duration: 0.25
+                                            }}
+                                        >
+                                            <AddedTrack
+                                                track={item.track}
+                                                profile={item.profile}
+                                                listUniqueId={queueItemId}
+                                                isOpen={selectedCardListId === queueItemId}
+                                                onClick={handleCardClick}
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </LayoutGroup>
                         </>) : (<>
                             <h3 className={styles.mainContentHeader}>Queue is empty</h3>
                         </>)}

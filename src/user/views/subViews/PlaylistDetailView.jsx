@@ -90,8 +90,8 @@ const PlaylistDetailsView = ({ onBack }) => {
 
                 <div className={styles.list}>
                     <TrackList 
-                        tracks={tracks} 
-                        options={[{ label: 'Add to Queue', icon: addToQueueIcon, color: 'var(--spotify-green)', onClick: handleTrackClick }]} 
+                        data={tracks} 
+                        options={[{ label: 'Add to Queue', icon: addToQueueIcon, color: 'var(--spotify-green)', onClick: handleTrackClick, shouldFly: true }]} 
                     />
 
                     {tracks.length === 0 && !loadingData && (

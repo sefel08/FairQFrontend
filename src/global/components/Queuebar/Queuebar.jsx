@@ -7,25 +7,25 @@ import TrackList from '../TrackList';
 
 import deleteIcon from '../../../assets/delete_icon.svg'
 
-const Queuebar = ({ queue = [] }) => {
+const Queuebar = () => {
 
-    const { removeFromQueue } = useUser();
+    const { queue, removeFromQueue } = useUser();
 
-    const handleRemoveFromQueue = React.useCallback((track, index) => {
-        removeFromQueue(index);
+    const handleRemoveFromQueue = React.useCallback((track, queueItemId) => {
+        removeFromQueue(queueItemId);
     }, [removeFromQueue]);
 
     return (
         <aside className={styles.container}>
             <div className={styles.scrollArea}>
                 <h3 className={styles.title}>Kolejka</h3>
-                {queue.length > 0 ? (
-                    <TrackList tracks={queue} options={[{ label: 'Delete', icon: deleteIcon, color: 'var(--spotify-red)', onClick: handleRemoveFromQueue }]} />
-                ) : (
-                    <p style={{ color: 'var(--spotify-light-gray)', textAlign: 'center', fontSize: '1.25rem' }}>
-                        Kolejka jest pusta
-                    </p>
-                )}
+                    {queue && Object.keys(queue).length > 0 ? (
+                        <TrackList data={queue} options={[{ label: 'Delete', icon: deleteIcon, color: 'var(--spotify-red)', onClick: handleRemoveFromQueue }]} isQueue={true} />
+                    ) : (
+                        <p style={{ color: 'var(--spotify-light-gray)', textAlign: 'center', fontSize: '1.25rem' }}>
+                            Kolejka jest pusta
+                        </p>
+                    )}
             </div>
         </aside>
     );

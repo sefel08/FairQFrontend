@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, use } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 import { useAuth } from '../../global/contexts/AuthContext';
 
@@ -67,14 +67,14 @@ export const UserProvider = ({ children }) => {
             body: JSON.stringify({ trackId })
         }).then(() => refreshUserQueue());
     };
-    const removeFromQueue = (index) => {
+    const removeFromQueue = (queueItemId) => {
         fetch(`${API_BASE_URL}/api/party/queue`, {
             method: 'DELETE',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ index })
+            body: JSON.stringify({ queueItemId })
         }).then(() => refreshUserQueue());
     };
 
@@ -85,7 +85,7 @@ export const UserProvider = ({ children }) => {
             queryForResults, setQueryForResults, 
             userPlaylists, refreshUserQueue,
             selectedPlaylist, setSelectedPlaylist,
-            queue, addToQueue, removeFromQueue
+            queue, addToQueue, removeFromQueue,
         }}>
             {children}
         </UserContext.Provider>

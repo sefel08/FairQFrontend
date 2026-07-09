@@ -1,14 +1,35 @@
 import React, { useCallback } from 'react';
 import styles from './TrackCard.module.css';
 
+import { useTrackFlyTrigger } from '../../../user/contexts/TrackCardFlyingContext';
 import { motion } from 'framer-motion';
+
 import spotify_icon from "../../../assets/spotify_icon_black.png";
 
-const TrackCard = ({ isOpen, onClick, track, index, options, squared }) => {
+const TrackCard = ({ isOpen, onClick, track, queueItemId, listUniqueId, options, squared }) => {
   
+  const triggerFlyingTrack = useTrackFlyTrigger();
+
   const handleOpenInSpotify = useCallback(() => {
       window.open(track.uri, '_blank');
   }, [track.uri]);
+  const handleOptionClick = useCallback((optionOnClickMethod, shouldFly, e) => {
+    if (shouldFly && triggerFlyingTrack) {
+      const cardElement = e.currentTarget.closest('.' + styles.trackCardContainer);
+      if (cardElement) {
+        const rect = cardElement.getBoundingClientRect();
+        triggerFlyingTrack({
+          track: track,
+          x: rect.left,
+          y: rect.top,
+          width: rect.width,
+          height: rect.height,
+        });
+      }
+    }
+    optionOnClickMethod(track, queueItemId);
+    onClick(listUniqueId);
+  }, [track, queueItemId, listUniqueId, onClick, triggerFlyingTrack]);
 
   const getOptionStyle = (optIndex, option, isSpotifyRedirect) => {
     const baseStyle = isSpotifyRedirect ? { backgroundColor: 'var(--spotify-green)' } : { backgroundColor: option.color || 'var(--spotify-green)' };
@@ -30,7 +51,7 @@ const TrackCard = ({ isOpen, onClick, track, index, options, squared }) => {
 
   return (
     <div className={styles.trackCardContainer} >
-      <motion.div layout className={styles.trackCard + (squared ? ' ' + styles.squared : '')} onClick={() => onClick(track.id + index)}>
+      <motion.div layout className={styles.trackCard + (squared ? ' ' + styles.squared : '')} onClick={() => onClick(listUniqueId)}>
         <img 
           src={track.imageUrl} 
           alt={track.name} 
@@ -59,7 +80,7 @@ const TrackCard = ({ isOpen, onClick, track, index, options, squared }) => {
         <button 
           className={styles.optionsButton}
           style={getOptionStyle(0, null, true)}
-          onClick={handleOpenInSpotify}
+          onClick={(e) => handleOptionClick(handleOpenInSpotify, false, e)}
         >
           <img src={spotify_icon} alt="Open in Spotify" className={styles.optionIcon} />  
         </button>
@@ -69,7 +90,7 @@ const TrackCard = ({ isOpen, onClick, track, index, options, squared }) => {
               key={optIndex}
               className={styles.optionsButton}
               style={getOptionStyle(optIndex, option, false)}
-              onClick={() => option.onClick(track, index) }
+              onClick={(e) => handleOptionClick(option.onClick, option.shouldFly, e)}
             >
               <img src={option.icon} alt={option.label} className={styles.optionIcon} />  
             </button>
