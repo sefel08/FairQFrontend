@@ -1,23 +1,26 @@
 import React, {useRef, useState} from 'react'
+import style from './MainBox.module.css';
 
 import { useUser } from '../../contexts/UserContext';
 
-import style from './MainBox.module.css';
 import SearchView from '../../views/subViews/SearchView';
 import HomeView from '../../views/subViews/HomeView';
 import LibraryView from '../../views/subViews/LibraryView';
-import PlaylistDetailView from '../../views/subViews/PlaylistDetailView';
+import TrackContainerView from '../../views/subViews/TrackContainerView';
+import ArtistView from '../../views/subViews/ArtistView';
 
 const MainBox = ({ currentView, setView }) => {
 
-    const { selectedPlaylist, setSelectedPlaylist } = useUser();
+    const { selectedTrackContainer, selectedArtist } = useUser();
     const mainBoxRef = useRef(null);
 
     return (
         <div className={style.mainContentArea} ref={mainBoxRef}>
             
-            {selectedPlaylist ? (
-                <PlaylistDetailView onBack={() => setSelectedPlaylist(null)} />
+            {selectedTrackContainer ? (
+                <TrackContainerView />
+            ) : selectedArtist ? (
+                <ArtistView />
             ) : currentView === 'search' ? (
                 <SearchView scrollRef={mainBoxRef} />
             ) : currentView === 'home' ? (
@@ -26,7 +29,7 @@ const MainBox = ({ currentView, setView }) => {
                 <LibraryView />
             ) : (
                 <div className={style.emptyView}>
-                    <p>Select a view from the top menu</p>
+                    Select a view from the top menu
                 </div>
             )}
         </div>

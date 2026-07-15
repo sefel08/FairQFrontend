@@ -6,6 +6,7 @@ import { UserProvider } from '../../user/contexts/UserContext';
 import { PlayerProvider } from '../../player/contexts/PlayerContext';
 import { PlayerPlaybackProvider } from '../../player/contexts/PlayerPlaybackContext';
 import { PartyProvider } from '../contexts/PartyContext';
+import { HostProvider } from '../../host/HostContext';
 
 import { useAuth } from '../contexts/AuthContext';
 import { useParty } from '../contexts/PartyContext';
@@ -14,6 +15,7 @@ import EulaView from './EulaView/EulaView';
 import SelectView from './SelectView';
 import UserView from '../../user/views/UserView';
 import PartyView from '../../user/views/PartyView';
+import HostView from '../../host/HostView.jsx';
 import NewPlayerView from '../../player/views/NewPlayerView';
 import Navbar from '../components/Navbar/Navbar';
 import SpotifySDKContainer from '../../player/components/SpotifySDKContainer';
@@ -25,7 +27,7 @@ const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL
 
 const Dashboard = () => {
   
-  const { authorized, loadingAuth, userRole } = useAuth();
+  const { authorized, loadingAuth, userRole, wantToLogin, setWantToLogin, login } = useAuth();
   const { loadingParty, partyId } = useParty();
 
   const [eulaAccepted, setEulaAccepted] = useState(() => localStorage.getItem('acceptedEula') === 'true' );
@@ -79,17 +81,37 @@ const Dashboard = () => {
   return (
     <UserProvider>
       <PlayerProvider isPlayer={userRole.isPlayer}>
-        <PlayerPlaybackProvider isPlayer={userRole.isPlayer}>
-          <TrackCardFlyingProvider>
+        <HostProvider>
+          <PlayerPlaybackProvider isPlayer={userRole.isPlayer}>
+            <TrackCardFlyingProvider>
 
             <div className={styles.dashboard}>
+            
+            {wantToLogin && (
+            <div className={styles.beforeLoginModal}>
+              <h1 className={styles.dashboardHeader}>Uwaga</h1>
+              <p className={styles.dashboardDescription}>
+                Aplikacja jest w trybie demo/developerskim, jeżeli chcesz zalogować się do Spotify poproś mnie (sefla), żeby dodał cię na listę osób upoważnionych do zalogowania. Maksymalna ilość osób upoważnionych to 5, więc jak nie potrzebujesz dostępu do swoich playlist spotify to zaloguj się jako gość.
+              </p>
+              <button className={styles.dashboardButton} onClick={login}>
+                Zostałem dodany i kontynuuję
+              </button>
+              <button className={styles.dashboardButton} onClick={() => setWantToLogin(false)}>
+                Powrót
+              </button>
+            </div>
+            )}
 
             {new URLSearchParams(window.location.search).get('loginError') ? (
               ( /* login error handling */
                 <>
-                <h1>Błąd logowania</h1>
-                <p>Nie udało się zalogować do Spotify. Upewnij się, że masz aktywne połączenie z internetem i spróbuj ponownie.</p>
-                <button onClick={() => window.location.href = FRONTEND_URL}>Spróbuj ponownie</button>
+                <h1 className={styles.dashboardHeader}>Błąd logowania</h1>
+                <p className={styles.dashboardDescription}>
+                  Nie udało się zalogować do Spotify. Upewnij się, że masz aktywne połączenie z internetem i spróbuj ponownie.
+                </p>
+                <button className={styles.dashboardButton} onClick={() => window.location.href = FRONTEND_URL}>
+                  Spróbuj ponownie
+                </button>
                 </>
               )
             ) : (loadingAuth || loadingParty) ? (
@@ -142,7 +164,7 @@ const Dashboard = () => {
                   ) : currentView === 'party' ? (
                     <PartyView />
                   ) : currentView === 'host' ? (
-                    <p style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Work in progress</p>
+                    <HostView />
                   ) : (
                     <p style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>Something went wrong</p>
                   )}
@@ -153,8 +175,9 @@ const Dashboard = () => {
 
             </div>
 
-          </TrackCardFlyingProvider>
-        </PlayerPlaybackProvider>
+            </TrackCardFlyingProvider>
+          </PlayerPlaybackProvider>
+        </HostProvider>
       </PlayerProvider>
     </UserProvider>
   );
